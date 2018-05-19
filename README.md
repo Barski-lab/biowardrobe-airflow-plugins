@@ -1,11 +1,21 @@
 # BioWardrobe Airflow Plugins
 
+1. Install **biowardrobe-airflow-plugins** from PyPi
 
-1. Add new pool for plugins, update `create_biowardrobe_plugin` function with the correct
-pool name
-2. Update `group_concat_max_len` on DB configuration, if concatenated text is trancated
-3. Apply scripts from `biowardrobe_views` if needed
-4. DAG example
+```
+    pip3 install biowardrobe-airflow-plugins
+```
+
+2. Run **biowardrobe-plugin-init** in any folder to execute SQL patches
+**experimentype2plugintype_view.sql** and **plugintype_patch.sql**
+```
+    biowardrobe-plugin-init
+```
+3. Add new pool **biowardrobe_plugins** into Airflow
+4. Set **group_concat_max_len** value from DB configuration to 1048576 (1M).
+5. To display bigBed Super Enhancers tracks, apply SQL patches from **biowardrobe_views** if needed
+
+DAG example
 ```buildoutcfg
 #!/usr/bin/env python3
 from airflow import DAG
