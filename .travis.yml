@@ -6,7 +6,7 @@ os:
 - linux
 install:
 - pip install .
-script: biowardrobe-plugin-init --help
+script: biowardrobe-plugin-init test
 branches:
   only:
   - master
