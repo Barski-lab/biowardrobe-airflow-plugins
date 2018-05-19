@@ -33,5 +33,5 @@ BIOWARDROBE_UPLOAD_FUNCTIONS = {
 }
 
 BIOWARDROBE_UPLOAD_TEMPLATES = {
-    "upload_bigbed": '{}.bb'
+    "upload_bigbed": '{}_super_enhancer.bb'
 }
