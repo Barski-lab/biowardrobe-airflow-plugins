@@ -15,8 +15,8 @@ def create_biowardrobe_plugin(workflow):
         'email': ['biowardrobe@biowardrobe.com'],
         'email_on_failure': False,
         'email_on_retry': False,
-        'pool': 'biowardrobe_basic_analysis',
-        'retries': 10,
+        'pool': 'biowardrobe_plugins',
+        'retries': 1,
         'retry_exponential_backoff': True,
         'retry_delay': timedelta(minutes=60),
         'max_retry_delay': timedelta(minutes=60 * 24)
