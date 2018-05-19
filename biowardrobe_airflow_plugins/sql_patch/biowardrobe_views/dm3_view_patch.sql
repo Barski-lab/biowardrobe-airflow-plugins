@@ -287,7 +287,7 @@ SELECT replace(concat(`l`.`uid`,'_senhncr'),'-','_') AS `tableName`,
        `l`.`name4browser` AS `shortLabel`,
        'bedGraph 4' AS `type`,
        `l`.`name4browser` AS `longLabel`,
-       2 AS `visibility`,
+       1 AS `visibility`,
        1 AS `priority`,
        30 AS `colorR`,
        70 AS `colorG`,
@@ -306,7 +306,7 @@ SELECT replace(concat(`l`.`uid`,'_senhncr'),'-','_') AS `tableName`,
        concat('parent ',replace(concat(`l`.`uid`,'_grp'),'-','_'),'
                track ',replace(concat(`l`.`uid`,'_senhncr'),'-','_'),'
                view SENHNCR
-               visibility full') AS `settings`
+               visibility dense') AS `settings`
 FROM ((`ems`.`labdata` `l`
        JOIN `ems`.`experimenttype` `et`)
        JOIN `ems`.`genome` `g`)
@@ -426,11 +426,12 @@ WHERE ((`l`.`deleted` = 0)
        AND (`l`.`genome_id` = `g`.`id`)
        AND (`l`.`egroup_id` IS NOT NULL)
        AND (`g`.`db` LIKE 'dm%'))
-SELECT replace(concat(`l`.`uid`,'_senh_f_wtrack'),'-','_') AS `tableName`,
+UNION
+SELECT replace(concat(`l`.`uid`,'_senhncr_f_wtrack'),'-','_') AS `tableName`,
        `l`.`name4browser` AS `shortLabel`,
        'bigBed' AS `type`,
        `l`.`name4browser` AS `longLabel`,
-       2 AS `visibility`,
+       1 AS `visibility`,
        2 AS `priority`,
        30 AS `colorR`,
        70 AS `colorG`,
@@ -447,10 +448,10 @@ SELECT replace(concat(`l`.`uid`,'_senh_f_wtrack'),'-','_') AS `tableName`,
        `l`.`egroup_id` AS `grp`,
        0 AS `canPack`,
        concat('parent ',replace(concat(`l`.`uid`,'_senhncr'),'-','_'),'
-               track ',replace(concat(`l`.`uid`,'_senh_f_wtrack'),'-','_'),'
+               track ',replace(concat(`l`.`uid`,'_senhncr_f_wtrack'),'-','_'),'
                subGroups view=SENHNCR
                autoScale on
-               visibility full
+               visibility dense
                windowingFunction maximum') AS `settings`
 FROM ((`ems`.`labdata` `l`
        JOIN `ems`.`experimenttype` `et`)

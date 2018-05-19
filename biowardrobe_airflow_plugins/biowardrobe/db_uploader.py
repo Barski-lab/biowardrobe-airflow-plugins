@@ -20,7 +20,7 @@ def upload_bigbed(self, uid, filename):
     db_tuple = self.cursor.fetchone()
     if not db_tuple:
         raise BiowUploadException(uid, message="DB not found")
-    gb_bigbed_table_name = db_tuple['db'] + '.`' + str(uid).replace("-", "_") + '_senh_f_wtrack`'
+    gb_bigbed_table_name = db_tuple['db'] + '.`' + str(uid).replace("-", "_") + '_senhncr_f_wtrack`'
     self.cursor.execute(f" DROP TABLE IF EXISTS {gb_bigbed_table_name}")
     self.cursor.execute(f""" CREATE TABLE {gb_bigbed_table_name}
                          (fileName VARCHAR(255) not NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8""")
