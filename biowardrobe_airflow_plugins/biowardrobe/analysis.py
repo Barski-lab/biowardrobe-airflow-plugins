@@ -4,11 +4,6 @@ import decimal
 from json import dumps, loads
 from biowardrobe_airflow_analysis.biowardrobe.utils import biowardrobe_settings
 from .utils import norm_path, fill_template
-from biowardrobe_airflow_analysis.biowardrobe.constants import (STAR_INDICES,
-                                                                BOWTIE_INDICES,
-                                                                CHR_LENGTH_GENERIC_TSV,
-                                                                ANNOTATIONS,
-                                                                ANNOTATION_GENERIC_TSV)
 
 
 _logger = logging.getLogger(__name__)
@@ -94,23 +89,7 @@ def get_biowardrobe_data(cursor, biowardrobe_uid):
                                                'plugin_template',
                                                'plugin_upload_rules']]
 
-    kwargs.update({
-        # TODO: move extension into database
-        "fastq_file_upstream": norm_path("/".join((kwargs["raw_data"], kwargs["uid"], kwargs["uid"] + '.fastq.bz2'))),
-        "fastq_file_downstream": norm_path("/".join((kwargs["raw_data"], kwargs["uid"], kwargs["uid"] + '_2.fastq.bz2'))),
-        "star_indices_folder": norm_path("/".join((kwargs["indices"], STAR_INDICES, kwargs["findex"]))),
-        "bowtie_indices_folder": norm_path("/".join((kwargs["indices"], BOWTIE_INDICES, kwargs["findex"]))),
-        "bowtie_indices_folder_ribo": norm_path("/".join((kwargs["indices"], BOWTIE_INDICES, kwargs["findex"] + "_ribo"))),
-        "chrom_length": norm_path("/".join((kwargs["indices"], BOWTIE_INDICES, kwargs["findex"], CHR_LENGTH_GENERIC_TSV))),
-        "annotation_input_file": norm_path("/".join((kwargs["indices"], ANNOTATIONS, kwargs["findex"],ANNOTATION_GENERIC_TSV))),
-        "exclude_chr": "control" if kwargs["spike"] else "",
-        "output_folder": norm_path("/".join((kwargs["raw_data"], kwargs["uid"]))),
-        "control_file": norm_path("/".join((kwargs["raw_data"], kwargs["control_id"], kwargs["control_id"] + '.bam')))
-        if kwargs['control_id'] else None
-    })
-
     kwargs = {key: (value if not isinstance(value, decimal.Decimal) else int(value)) for key, value in kwargs.items()}
-    kwargs['job'] = fill_template(kwargs['template'], kwargs)
 
     for workflow_name, plugin_data in kwargs['plugins'].items():
         try:

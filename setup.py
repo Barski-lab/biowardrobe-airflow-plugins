@@ -11,11 +11,6 @@ README = path.join(SETUP_DIR, 'README.md')
 
 
 class EggInfoFromGit(egg_info):
-    """Tag the build with git commit timestamp.
-
-    If a build tag has already been set (e.g., "egg_info -b", building
-    from source package), leave it alone.
-    """
 
     def git_timestamp_tag(self):
         gitinfo = check_output(
@@ -44,6 +39,7 @@ setup(
     download_url='https://github.com/michael-kotliar/biowardrobe-airflow-plugins',
     author='Michael Kotliar',
     author_email='misha.kotliar@gmail.com',
+    license = 'Apache-2.0',
     packages=find_packages(),
     install_requires=[
         'biowardrobe-airflow-analysis == 1.0.20180430223646',
@@ -57,7 +53,6 @@ setup(
     },
     include_package_data=True,
     package_data={
-        '': ['*.sh'],
         'biowardrobe_airflow_plugins': [
             'sql_patch/biowardrobe_tables/*.sql',
             'sql_patch/biowardrobe_views/*.sql'
