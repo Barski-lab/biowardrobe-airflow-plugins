@@ -51,7 +51,7 @@ setup(
     zip_safe=False,
     entry_points={
         'console_scripts': [
-            "biowardrobe-plugin-init=biowardrobe_airflow_plugins.biowardrobe_plugin_init:plugin_init"
+            "biowardrobe-plugin-init=biowardrobe_airflow_plugins.biowardrobe_plugin_init:main"
         ]
     },
     include_package_data=True,
