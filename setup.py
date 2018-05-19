@@ -46,7 +46,8 @@ setup(
     author_email='misha.kotliar@gmail.com',
     packages=find_packages(),
     install_requires=[
-        'biowardrobe-airflow-analysis == 1.0.20180430223646'
+        'biowardrobe-airflow-analysis == 1.0.20180430223646',
+        'mysqlclient>=1.3.6'
     ],
     zip_safe=False,
     entry_points={
