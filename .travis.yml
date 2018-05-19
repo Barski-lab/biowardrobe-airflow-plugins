@@ -10,7 +10,6 @@ script: echo "Dummy message"
 branches:
   only:
   - master
-  - /^([1-9]\d*!)?(0|[1-9]\d*)(\.(0|[1-9]\d*))*((a|b|rc)(0|[1-9]\d*))?(\.post(0|[1-9]\d*))?(\.dev(0|[1-9]\d*))?$/
 deploy:
   provider: pypi
   user: michael_kotliar
