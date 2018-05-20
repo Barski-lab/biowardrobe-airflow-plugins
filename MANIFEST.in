@@ -1,0 +1,3 @@
+include biowardrobe_airflow_plugins/sql_patch/biowardrobe_tables/*.sql
+include biowardrobe_airflow_plugins/sql_patch/biowardrobe_views/*.sql
+
