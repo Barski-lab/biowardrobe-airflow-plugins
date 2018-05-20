@@ -15,7 +15,7 @@
 4. Set **group_concat_max_len** value from DB configuration to 1048576 (1M).
 5. Update **biowardrobe-cwl-workflows** to include the latest **super-enhancer.cwl** workflow
 6. Apply SQL patches from **biowardrobe_views** to display bigBed Super Enhancers tracks
-7. Create DAG for **super-enhancer** plugin workflow
+7. Create **super-enhancer.py** DAG to run plugin workflow
 ```bash
     #!/usr/bin/env python3
     from airflow import DAG
