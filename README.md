@@ -13,10 +13,9 @@
 ```
 3. Add new pool **biowardrobe_plugins** into Airflow
 4. Set **group_concat_max_len** value from DB configuration to 1048576 (1M).
-5. Make sure that **biowardrobe-cwl-workflows** includes **super-enhancer.cwl** workflow
-6. To display bigBed Super Enhancers tracks, apply SQL patches from **biowardrobe_views**
-
-DAG example
+5. Update **biowardrobe-cwl-workflows** to include the latest **super-enhancer.cwl** workflow
+6. Apply SQL patches from **biowardrobe_views** to display bigBed Super Enhancers tracks
+7. Create DAG for **super-enhancer** plugin workflow
 ```bash
     #!/usr/bin/env python3
     from airflow import DAG
@@ -24,16 +23,15 @@ DAG example
     dag = biowardrobe_plugin("super-enhancer.cwl")
 ```
 
-To trigger plugin by name and experiment UID
-```bash
-    airflow trigger_dag --conf "{\"biowardrobe_uid\":\"UID\"}" super-enhancer
-```
-
-To get the list of available plugins for UID
+To fetch the list of available plugins by UID
 ```sql
   SELECT p.etype 
   FROM labdata l
   LEFT JOIN experimenttype2plugintype m ON m.experimenttype_id=l.experimenttype_id
   LEFT JOIN plugintype p ON p.id=m.plugintype_id
   WHERE uid='uid'
+```
+To trigger plugin by name and experiment UID
+```bash
+    airflow trigger_dag --conf "{\"biowardrobe_uid\":\"UID\"}" super-enhancer
 ```
