@@ -1,3 +1,4 @@
-include biowardrobe_airflow_plugins/sql_patch/biowardrobe_tables/*.sql
-include biowardrobe_airflow_plugins/sql_patch/biowardrobe_views/*.sql
+include biowardrobe_airflow_plugins/sql_patches/biowardrobe/*.sql
+include biowardrobe_airflow_plugins/sql_patches/genome_browser/*.sql
+include biowardrobe_airflow_plugins/cwls/*.cwl
 

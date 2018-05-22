@@ -42,22 +42,20 @@ setup(
     license = 'Apache-2.0',
     packages=find_packages(),
     install_requires=[
-        'biowardrobe-airflow-analysis == 1.0.20180430223646',
-        'mysqlclient>=1.3.6'
+        'cwltool == 1.0.20180220121300',
+        'sqlparse',
+        'ruamel.yaml < 0.15',
+        'cwl-airflow-parser == 1.0.20180220071453',
+        'mysqlclient>=1.3.6',
+        'apache-airflow >= 1.9.0, < 2'
     ],
     zip_safe=False,
     entry_points={
         'console_scripts': [
-            "biowardrobe-plugin-init=biowardrobe_airflow_plugins.biowardrobe_plugin_init:main"
+            "biowardrobe-plugin-init=biowardrobe_airflow_plugins.init_plugin:main"
         ]
     },
     include_package_data=True,
-    package_data={
-        'biowardrobe_airflow_plugins': [
-            'sql_patch/biowardrobe_tables/*.sql',
-            'sql_patch/biowardrobe_views/*.sql'
-        ]
-    },
     cmdclass={'egg_info': tagger},
     classifiers=[
         'Development Status :: 5 - Production/Stable',

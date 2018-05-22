@@ -26,7 +26,7 @@ UPDATE `ems`.`plugintype` SET
     "output_folder": "{raw_data}/{uid}",
     "uid": "{uid}"
   }}',
-  upload_rules='[
-      "upload_bigbed"
-  ]'
+  upload_rules='{{
+      "upload_bigbed": "{}_super_enhancer.bb"
+  }}'
 WHERE etype='Super Enhancer';
