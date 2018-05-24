@@ -1,37 +1,64 @@
 #! /usr/bin/env python3
+import MySQLdb
 from contextlib import closing
 from airflow.hooks.mysql_hook import MySqlHook
 from sqlparse import split
-
-CONNECTION_ID = "biowardrobe"
-
-
-def execute(sql, option=None):
-    mysql = MySqlHook(mysql_conn_id=CONNECTION_ID)
-    with closing(mysql.get_conn()) as connection:
-        with closing(connection.cursor()) as cursor:
-            cursor.execute(sql)
-            if option == 1:
-                return cursor.fetchone()
-            elif option == 2:
-                return cursor.fetchall()
-            else:
-                return None
+from biowardrobe_airflow_plugins.utils.func import open_file
 
 
-def fetchone(sql):
-    return execute(sql,1)
+class Connect:
+
+    def get_conn(self):
+        pass
+
+    def execute(self, sql, option=None):
+        with closing(self.get_conn()) as connection:
+            with closing(connection.cursor()) as cursor:
+                cursor.execute(sql)
+                if option == 1:
+                    return cursor.fetchone()
+                elif option == 2:
+                    return cursor.fetchall()
+                else:
+                    return None
+
+    def fetchone(self, sql):
+        return self.execute(sql,1)
+
+    def fetchall(self, sql):
+        return self.execute(sql,2)
+
+    def get_settings(self):
+        return {row['key']: row['value'] for row in self.fetchall("SELECT * FROM settings")}
+
+    def apply_patch(self, filename):
+        with open(filename) as patch_stream:
+            for sql_segment in split(patch_stream.read()):
+                self.execute(sql_segment)
 
 
-def fetchall(sql):
-    return execute(sql,2)
+class DirectConnect(Connect):
+
+    def __init__(self, config_file):
+        self.config = [line for line in open_file(config_file) if not line.startswith("#")]
+
+    def get_conn(self):
+        conn_config = {
+            "host": self.config[0],
+            "user": self.config[1],
+            "passwd": self.config[2],
+            "db": self.config[3],
+            "port": int(self.config[4]),
+            "cursorclass": MySQLdb.cursors.DictCursor
+        }
+        conn = MySQLdb.connect(**conn_config)
+        return conn
 
 
-def get_settings():
-    return {row['key']: row['value'] for row in fetchall("SELECT * FROM settings")}
+class HookConnect(Connect):
 
+    CONNECTION_ID = "biowardrobe"
 
-def apply_patch(filename):
-    with open(filename) as patch_stream:
-        for sql_segment in split(patch_stream.read()):
-            execute(sql_segment)
+    def get_conn(self):
+        mysql = MySqlHook(mysql_conn_id=self.CONNECTION_ID)
+        return mysql.get_conn()

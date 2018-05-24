@@ -1,4 +1,5 @@
 import os
+import argparse
 from collections import OrderedDict
 from json import loads
 
@@ -45,3 +46,29 @@ def get_workflow_by_name(workflow_name):
             {filename: os.path.join(root, filename) for filename in files if os.path.splitext(filename)[1] == '.cwl'}
         )
     return workflows_list[workflow_name]
+
+
+def normalize_args(args, skip_list=[]):
+    """Converts all relative path arguments to absolute ones relatively to the current working directory"""
+    normalized_args = {}
+    for key,value in args.__dict__.iteritems():
+        if key not in skip_list:
+            normalized_args[key] = value if not value or os.path.isabs(value) else os.path.normpath(os.path.join(os.getcwd(), value))
+        else:
+            normalized_args[key]=value
+    return argparse.Namespace (**normalized_args)
+
+
+def open_file(filename):
+    """Returns list of lines from the text file. \n at the end of the lines are trimmed. Empty lines are excluded"""
+    lines = []
+    with open(filename, 'r') as infile:
+        for line in infile:
+            if line.strip():
+                lines.append(line.strip())
+    return lines
+
+
+def export_to_file (output_filename, data):
+    with open(output_filename, 'w') as output_file:
+        output_file.write(data)

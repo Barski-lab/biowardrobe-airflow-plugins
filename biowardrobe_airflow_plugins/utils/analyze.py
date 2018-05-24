@@ -2,7 +2,7 @@
 import logging
 import decimal
 from json import dumps, loads
-from biowardrobe_airflow_plugins.utils.connect import (get_settings, fetchone, fetchall)
+from biowardrobe_airflow_plugins.utils.connect import HookConnect
 from biowardrobe_airflow_plugins.utils.func import (norm_path, fill_template)
 
 
@@ -11,10 +11,9 @@ logger = logging.getLogger(__name__)
 
 def get_data(uid):
     logger.debug(f"Collecting data for: {uid}")
-
-    settings = get_settings()
-
-    sql_query = f"""SELECT 
+    connect_db = HookConnect()
+    settings = connect_db.get_settings()
+    sql_query = f"""SELECT
                         l.uid                              as uid,
                         l.params                           as outputs,
                         l.control_id                       as control_uid,
@@ -35,7 +34,7 @@ def get_data(uid):
 
     logger.debug(f"Running SQL query:\n{sql_query}")
 
-    kwargs = fetchone(sql_query)
+    kwargs = connect_db.fetchone(sql_query)
     logger.debug(f"Collecting SQL query results:\n{kwargs}")
     kwargs = {key: (value if not isinstance(value, decimal.Decimal) else int(value)) for key, value in kwargs.items()}
 
@@ -58,7 +57,7 @@ def get_data(uid):
                                                     'etype_id':     plugin['etype_id'],
                                                     'job':          fill_template(plugin['template'], kwargs),
                                                     'upload_rules': fill_template(plugin['upload_rules'], kwargs)}
-                               for plugin in fetchall("SELECT * FROM plugintype")
+                               for plugin in connect_db.fetchall("SELECT * FROM plugintype")
                                if kwargs['exp_type_id'] in loads(plugin['etype_id'])}})
 
     logger.debug(f"Collected data for: {uid}\n{dumps(kwargs, indent=4)}")
