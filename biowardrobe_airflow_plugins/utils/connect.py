@@ -1,9 +1,13 @@
 #! /usr/bin/env python3
-import MySQLdb
+import MySQLdb                                                 # TODO Do I need to add it into requirements in setup.py
+import logging
 from contextlib import closing
 from airflow.hooks.mysql_hook import MySqlHook
 from sqlparse import split
 from biowardrobe_airflow_plugins.utils.func import open_file
+
+
+logger = logging.getLogger(__name__)
 
 
 class Connect:
@@ -32,9 +36,11 @@ class Connect:
         return {row['key']: row['value'] for row in self.fetchall("SELECT * FROM settings")}
 
     def apply_patch(self, filename):
+        logger.debug(f"Apply SQL patch: {filename}")
         with open(filename) as patch_stream:
             for sql_segment in split(patch_stream.read()):
-                self.execute(sql_segment)
+                if sql_segment:
+                    self.execute(sql_segment)
 
 
 class DirectConnect(Connect):

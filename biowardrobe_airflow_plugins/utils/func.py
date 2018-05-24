@@ -51,7 +51,7 @@ def get_workflow_by_name(workflow_name):
 def normalize_args(args, skip_list=[]):
     """Converts all relative path arguments to absolute ones relatively to the current working directory"""
     normalized_args = {}
-    for key,value in args.__dict__.iteritems():
+    for key,value in args.__dict__.items():
         if key not in skip_list:
             normalized_args[key] = value if not value or os.path.isabs(value) else os.path.normpath(os.path.join(os.getcwd(), value))
         else:

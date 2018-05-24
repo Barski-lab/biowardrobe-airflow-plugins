@@ -1,18 +1,5 @@
-DROP TABLE IF EXISTS `ems`.`plugintype`;
-CREATE TABLE `ems`.`plugintype` (
-  `id`           int(11) NOT NULL AUTO_INCREMENT,
-  `ptype`        varchar(100) DEFAULT NULL,
-  `workflow`     varchar(255) DEFAULT NULL,
-  `template`     text DEFAULT NULL,
-  `upload_rules` text DEFAULT NULL,
-  `etype_id`     varchar(100) NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ptype` (`ptype`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 # Super Enhancer
-INSERT INTO `ems`.`plugintype` SELECT NULL, 'Super Enhancer', '', '', '','';
+INSERT IGNORE INTO `ems`.`plugintype` SELECT NULL, 'Super Enhancer', '', '', '','';
 UPDATE `ems`.`plugintype` SET
   workflow='super-enhancer.cwl',
   template='{{
