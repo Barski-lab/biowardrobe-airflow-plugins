@@ -5,16 +5,17 @@ from json import dumps, loads
 from biowardrobe_airflow_plugins.utils.connect import (get_settings, fetchone, fetchall)
 from biowardrobe_airflow_plugins.utils.func import (norm_path, fill_template)
 
+
 logger = logging.getLogger(__name__)
 
 
 def get_data(uid):
-    logger.debug("Collecting data for: {}".format(uid))
+    logger.debug(f"Collecting data for: {uid}")
 
     settings = get_settings()
 
     sql_query = f"""SELECT 
-                        l.uid,
+                        l.uid                              as uid,
                         l.params                           as outputs,
                         l.control_id                       as control_uid,
                         COALESCE(l.trim5,0)                as trim5,
@@ -32,11 +33,11 @@ def get_data(uid):
                     LEFT JOIN (antibody a) ON (l.antibody_id=a.id)
                     WHERE l.uid='{uid}'"""
 
-    logger.debug(f"SQL query:\n {sql_query}")
+    logger.debug(f"Running SQL query:\n{sql_query}")
 
     kwargs = fetchone(sql_query)
+    logger.debug(f"Collecting SQL query results:\n{kwargs}")
     kwargs = {key: (value if not isinstance(value, decimal.Decimal) else int(value)) for key, value in kwargs.items()}
-    logger.debug(f"SQL query results:\n {kwargs}")
 
     kwargs.update({
         "outputs": loads(kwargs['outputs']) if kwargs['outputs'] else {},
@@ -52,11 +53,13 @@ def get_data(uid):
         "experimentsdb": settings['experimentsdb']
     })
 
-    plugins = {plugin['workflow']: {'job': fill_template(plugin['template'], kwargs),
-                                    'upload_rules': fill_template(plugin['upload_rules'], kwargs)}
-               for plugin in fetchall("SELECT * FROM plugintype") if kwargs['exp_type_id'] in loads(plugin['etype_id'])}
+    kwargs.update({"plugins": {plugin['workflow']: {'id':           plugin['id'],
+                                                    'ptype':        plugin['ptype'],
+                                                    'etype_id':     plugin['etype_id'],
+                                                    'job':          fill_template(plugin['template'], kwargs),
+                                                    'upload_rules': fill_template(plugin['upload_rules'], kwargs)}
+                               for plugin in fetchall("SELECT * FROM plugintype")
+                               if kwargs['exp_type_id'] in loads(plugin['etype_id'])}})
 
-    kwargs.update({"plugins": plugins})
-
-    logger.info("Result: \n{}".format(dumps(kwargs, indent=4)))
+    logger.debug(f"Collected data for: {uid}\n{dumps(kwargs, indent=4)}")
     return kwargs

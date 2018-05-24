@@ -7,10 +7,8 @@ from biowardrobe_airflow_plugins.operators.biowardrobepluginjobgatherer import B
 from biowardrobe_airflow_plugins.utils.func import get_workflow_by_name
 
 
-logger = logging.getLogger(__name__)
-
-
 # TODO put all default arguments in config file
+
 
 def create_plugin(workflow_name):
     dag = CWLDAG(default_args={'owner': 'airflow',
