@@ -11,17 +11,20 @@ def execute(sql, option=None):
     with closing(mysql.get_conn()) as connection:
         with closing(connection.cursor()) as cursor:
             cursor.execute(sql)
-            return {"1":  cursor.fetchone(),
-                    "2":  cursor.fetchall(),
-                    None: None}[option]
+            if option == 1:
+                return cursor.fetchone()
+            elif option == 2:
+                return cursor.fetchall()
+            else:
+                return None
 
 
 def fetchone(sql):
-    return execute(sql,1).fetchone()
+    return execute(sql,1)
 
 
 def fetchall(sql):
-    return execute(sql,2).fetchall()
+    return execute(sql,2)
 
 
 def get_settings():

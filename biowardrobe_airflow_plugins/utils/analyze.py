@@ -34,8 +34,6 @@ def get_data(uid):
 
     logger.debug(f"SQL query:\n {sql_query}")
 
-
-
     kwargs = fetchone(sql_query)
     kwargs = {key: (value if not isinstance(value, decimal.Decimal) else int(value)) for key, value in kwargs.items()}
     logger.debug(f"SQL query results:\n {kwargs}")
@@ -54,23 +52,11 @@ def get_data(uid):
         "experimentsdb": settings['experimentsdb']
     })
 
-    plugins = fetchall(f"""SELECT *
-                           FROM plugintype p 
-                           LEFT JOIN (experimenttype2plugintype m) ON (m.plugintype_id=p.id)
-                           WHERE m.experimenttype_id={kwargs['exp_type_id']}""")
+    plugins = {plugin['workflow']: {'job': fill_template(plugin['template'], kwargs),
+                                    'upload_rules': fill_template(plugin['upload_rules'], kwargs)}
+               for plugin in fetchall("SELECT * FROM plugintype") if kwargs['exp_type_id'] in loads(plugin['etype_id'])}
 
-    kwargs.update({
-        "plugins": {plugin['workflow']: {'template': plugin['template'],
-                                         'upload_rules': loads(plugin['upload_rules'])}
-                    for plugin in plugins} if plugins else {}
-    })
-
-    for workflow_name, plugin_data in kwargs['plugins'].items():
-        try:
-            plugin_data['job'] = fill_template(plugin_data['template'], kwargs)
-        except Exception:
-            logger.debug(f"Failed to generate job for plugin: {workflow_name}")
-            pass
+    kwargs.update({"plugins": plugins})
 
     logger.info("Result: \n{}".format(dumps(kwargs, indent=4)))
     return kwargs

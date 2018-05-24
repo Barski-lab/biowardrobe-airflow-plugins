@@ -38,7 +38,7 @@ def norm_path(path):
 
 
 def get_workflow_by_name(workflow_name):
-    workflows_folder = norm_path(os.path.join("../", os.path.dirname(os.path.abspath(__file__)), "cwls"))
+    workflows_folder = norm_path(os.path.join(os.path.dirname(os.path.abspath(os.path.join(__file__, "../"))), "cwls"))
     workflows_list = {}
     for root, dirs, files in os.walk(workflows_folder):
         workflows_list.update(
