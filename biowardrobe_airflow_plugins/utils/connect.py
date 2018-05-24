@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 from contextlib import closing
 from airflow.hooks.mysql_hook import MySqlHook
-
+from sqlparse import split
 
 CONNECTION_ID = "biowardrobe"
 
@@ -28,9 +28,10 @@ def fetchall(sql):
 
 
 def get_settings():
-    return {row['key']: row['value'] for row in fetchall("select * from settings")}
+    return {row['key']: row['value'] for row in fetchall("SELECT * FROM settings")}
 
 
 def apply_patch(filename):
     with open(filename) as patch_stream:
-        execute(patch_stream.read())
+        for sql_segment in split(patch_stream.read()):
+            execute(sql_segment)

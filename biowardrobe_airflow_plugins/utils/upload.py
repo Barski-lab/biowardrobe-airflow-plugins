@@ -20,15 +20,12 @@ def process_results(upload_rules, uid, output_folder):
 
 
 def upload_bigbed(self, uid, filename):
+    logger.debug(f"Uploading bigBed file: {filename}")
     db_name = fetchone(f"SELECT g.db FROM labdata l INNER JOIN genome g ON g.id=l.genome_id WHERE l.uid='{uid}'")['db']
     table_name = db_name + '.`' + str(uid).replace("-", "_") + '_senhncr_f_wtrack`'
-    logger.debug(f"Uploading bigBed to: {table_name}")
-    sql_query = f"""DROP TABLE IF EXISTS {table_name};
-                    CREATE TABLE {table_name} (fileName VARCHAR(255) not NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-                    INSERT INTO {table_name} VALUES ('{filename}');"""
-    logger.debug(f"Running SQL query:\n {sql_query}")
-    execute(sql_query)
-
+    execute(f"DROP TABLE IF EXISTS {table_name}")
+    execute(f"CREATE TABLE {table_name} (fileName VARCHAR(255) not NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8")
+    execute(f"INSERT INTO {table_name} VALUES ('{filename}')")
 
 UPLOAD_FUNCTIONS = {
     "upload_bigbed": upload_bigbed
