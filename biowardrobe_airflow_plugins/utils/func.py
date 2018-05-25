@@ -1,4 +1,5 @@
 import os
+import re
 import argparse
 from collections import OrderedDict
 from json import loads
@@ -38,14 +39,19 @@ def norm_path(path):
     return os.path.abspath(os.path.normpath(os.path.normcase(path)))
 
 
+def get_files(current_dir, filename_pattern=".*"):
+    """Files with the identical basenames are overwritten"""
+    files_dict = {}
+    for root, dirs, files in os.walk(current_dir):
+        files_dict.update(
+            {filename: os.path.join(root, filename) for filename in files if re.match(filename_pattern, filename)}
+        )
+    return files_dict
+
+
 def get_workflow_by_name(workflow_name):
     workflows_folder = norm_path(os.path.join(os.path.dirname(os.path.abspath(os.path.join(__file__, "../"))), "cwls"))
-    workflows_list = {}
-    for root, dirs, files in os.walk(workflows_folder):
-        workflows_list.update(
-            {filename: os.path.join(root, filename) for filename in files if os.path.splitext(filename)[1] == '.cwl'}
-        )
-    return workflows_list[workflow_name]
+    return get_files(workflows_folder)[workflow_name]
 
 
 def normalize_args(args, skip_list=[]):
