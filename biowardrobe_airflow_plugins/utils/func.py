@@ -49,7 +49,7 @@ def get_files(current_dir, filename_pattern=".*"):
     return files_dict
 
 
-def get_workflow_by_name(workflow_name):
+def get_workflow(workflow_name):
     workflows_folder = norm_path(os.path.join(os.path.dirname(os.path.abspath(os.path.join(__file__, "../"))), "cwls"))
     return get_files(workflows_folder)[workflow_name]
 
