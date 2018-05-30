@@ -249,7 +249,6 @@ steps:
       doc: Tool sorts data from `unsorted_file` by `key`
 
   bed_to_bigbed:
-    run: ../tools/ucsc-bedtobigbed.cwl
     in:
       input_bed: sort_bed/sorted_file
       chrom_length_file: chrom_length_file
