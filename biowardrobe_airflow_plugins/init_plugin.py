@@ -16,22 +16,6 @@ from airflow.bin.cli import api_client
 
 logger = logging.getLogger(__name__)
 
-"""
-1. Check if BioWardrobe is installed:
-    - check if can read config file
-    - check if can access BioWardrobe DB
-    - apply plugintype_patch.sql
-    - generate params for all experiments as if they were run from CWL
-2. Check if Airflow is installed
-    - check if can read configuration file
-    - check if can locate DAGs folder
-    - generate DAGs for all cwl files from cwls folder, put it in DAGs folder
-    - add pool for BioWardrobe Plugins
-    - check if there is connection to BioWardrobe DB, check if all parameters corresponds to the settings from BioWardrobe config file
-      * get the name of that conection if ot exists, if not, create one with default name biowardrobe
-3. Check if I can patch Genome Browser DBs
-"""
-
 
 def get_parser():
     parser = argparse.ArgumentParser(description='BioWardrobe Airflow Plugins', add_help=True)

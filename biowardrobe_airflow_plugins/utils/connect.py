@@ -21,6 +21,7 @@ class Connect:
         with closing(self.get_conn()) as connection:
             with closing(connection.cursor()) as cursor:
                 cursor.execute(sql)
+                connection.commit()
                 if option == 1:
                     return cursor.fetchone()
                 elif option == 2:
