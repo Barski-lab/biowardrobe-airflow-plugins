@@ -78,3 +78,22 @@ def open_file(filename):
 def export_to_file (output_filename, data):
     with open(output_filename, 'w') as output_file:
         output_file.write(data)
+
+
+def dict_find(dictionary, key):
+    for k, v in dictionary.items():
+        if k == key:
+            yield v
+        elif isinstance(v, dict):
+            for result in dict_find(key, v):
+                yield result
+        elif isinstance(v, list):
+            for d in v:
+                for result in dict_find(key, d):
+                    yield result
+
+
+def validate_locations(dictionary, key="location"):
+    for location in dict_find(dictionary, key):
+        if not os.path.isfile(location) and not os.path.isdir(location):
+            raise OSError

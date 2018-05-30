@@ -3,6 +3,8 @@ import MySQLdb                                                 # TODO Do I need 
 import logging
 from contextlib import closing
 from airflow.hooks.mysql_hook import MySqlHook
+from airflow.utils.db import merge_conn
+from airflow import models
 from sqlparse import split
 from biowardrobe_airflow_plugins.utils.func import open_file
 
@@ -64,6 +66,20 @@ class DirectConnect(Connect):
 class HookConnect(Connect):
 
     CONNECTION_ID = "biowardrobe"
+
+    def __init__(self, config_file = None):
+        if config_file:
+            self.config = [line for line in open_file(config_file) if not line.startswith("#")]
+            merge_conn(
+                models.Connection(
+                    conn_id = self.CONNECTION_ID,
+                    conn_type = 'mysql',
+                    host = self.config[0],
+                    login = self.config[1],
+                    password = self.config[2],
+                    schema = self.config[3],
+                    extra = "{\"cursor\":\"dictcursor\"}"))
+            self.get_conn()
 
     def get_conn(self):
         mysql = MySqlHook(mysql_conn_id=self.CONNECTION_ID)

@@ -4,8 +4,15 @@ import sys
 import logging
 import argparse
 from typing import Text
-from biowardrobe_airflow_plugins.utils.connect import DirectConnect
-from biowardrobe_airflow_plugins.utils.func import (norm_path, normalize_args, get_files)
+from json import dumps, loads
+
+from biowardrobe_airflow_plugins.utils.connect import (DirectConnect, HookConnect)
+from biowardrobe_airflow_plugins.utils.func import (norm_path, normalize_args, get_files, fill_template, validate_locations)
+from biowardrobe_airflow_plugins.templates.outputs import OUTPUT_TEMPLATES
+
+from airflow.settings import DAGS_FOLDER
+from airflow.bin.cli import api_client
+
 
 logger = logging.getLogger(__name__)
 
@@ -51,22 +58,61 @@ def apply_patches(connect_db):
 
 
 def gen_outputs(connect_db):
+    settings = connect_db.get_settings()
+    raw_data = norm_path("/".join((settings['wardrobe'], settings['preliminary'])))
     sql_query = """SELECT
-                         l.uid    as uid,
-                         l.params as outputs,
-                         e.etype  as exp_type
-                         e.id     as exp_id
+                         l.uid                    as uid,
+                         l.params                 as outputs,
+                         e.etype                  as exp_type,
+                         e.id                     as exp_id,
+                         COALESCE(a.properties,0) as peak_type
                    FROM  labdata l
                    INNER JOIN (experimenttype e) ON (e.id=l.experimenttype_id)
+                   LEFT JOIN (antibody a) ON (l.antibody_id=a.id)
                    WHERE (l.params NOT LIKE '%bambai_pair%') AND
                          (l.params NOT LIKE '%bam_merged%')  AND
                          (l.deleted=0)                       AND
                          (l.libstatus=12)                    AND
                          COALESCE(l.egroup_id,'')<>''        AND
                          COALESCE(l.name4browser,'')<>''"""
-    connect_db.fetchall(sql_query)
+
+    for kwargs in connect_db.fetchall(sql_query):
+        try:
+            kwargs.update({"raw_data":   raw_data,
+                           "peak_type": "broad" if int(kwargs['peak_type'])==2 else "narrow",
+                           "outputs":    loads(kwargs['outputs']) if kwargs['outputs'] else {}})
+            for template in OUTPUT_TEMPLATES[kwargs['exp_id']][kwargs['peak_type']]:
+                kwargs["outputs"].update(fill_template(template, kwargs))
+            validate_locations(kwargs)
+            connect_db.execute(f"""UPDATE labdata SET params='{dumps(kwargs["outputs"])}' WHERE uid='{kwargs["exp_id"]}'""")
+        except Exception:
+            logger.debug(f"Failed to updated params for {kwargs['uid']}")
+            pass
 
 
+def create_dags():
+    current_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cwls")
+    template = u"""#!/usr/bin/env python3\nfrom airflow import DAG\nfrom biowardrobe_airflow_plugins import biowardrobe_plugin\ndag = biowardrobe_plugin("{}")"""
+    for filename, path in get_files(current_dir).items():
+        output_filename = os.path.abspath(os.path.join(DAGS_FOLDER, os.path.splitext(filename)[0]+".py"))
+        with open(output_filename, 'w') as output_stream:
+            output_stream.write(template.format(filename))
+
+
+def create_pools():
+    pools = [api_client.get_pool(name="biowardrobe_plugins")]
+    if not pools:
+        api_client.create_pool(name="biowardrobe_plugins", slots=10, description="pool to run BioWardrobe plugins")
+
+
+def create_connection(config):
+    HookConnect(config)
+
+
+def setup_airflow(config):
+    create_connection(config)
+    create_pools()
+    create_dags()
 
 
 def setup_biowardrobe(config):
@@ -78,9 +124,11 @@ def setup_biowardrobe(config):
 def main(argsl=None):
     if argsl is None:
         argsl = sys.argv[1:]
-    args,_= get_parser().parse_known_args(argsl)
+    args,_ = get_parser().parse_known_args(argsl)
     args = normalize_args(args)
+
     setup_biowardrobe(args.config)
+    setup_airflow(args.config)
 
 
 if __name__ == "__main__":
