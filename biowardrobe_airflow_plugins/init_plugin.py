@@ -58,8 +58,7 @@ def gen_outputs(connect_db):
                          (l.deleted=0)                       AND
                          (l.libstatus=12)                    AND
                          COALESCE(l.egroup_id,'')<>''        AND
-                         COALESCE(l.name4browser,'')<>''     AND
-                         (l.libstatustxt='Complete:upgraded')"""
+                         COALESCE(l.name4browser,'')<>''"""
 
     for kwargs in connect_db.fetchall(sql_query):
         try:

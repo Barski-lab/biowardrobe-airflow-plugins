@@ -160,6 +160,12 @@ CHIPSEQ_TRIM_PE = """
 """
 
 
+# |  1 | DNA-Seq                         |
+# |  2 | DNA-Seq pair                    |
+# |  8 | DNA-Seq Trim Galore             |
+# |  9 | DNA-Seq pair Trim Galore        |
+
+
 
 OUTPUT_TEMPLATES = {
     1: {
@@ -172,10 +178,10 @@ OUTPUT_TEMPLATES = {
     },
     8: {
         "narrow": [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_NARROW, CHIPSEQ_TRIM_SE],
-        "broad":  [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_BROAD, CHIPSEQ_TRIM_PE]
+        "broad":  [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_BROAD,  CHIPSEQ_TRIM_SE]
     },
     9: {
-        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_PE, CHIPSEQ_NARROW, CHIPSEQ_TRIM_SE],
-        "broad":  [CHIPSEQ_COMMON, CHIPSEQ_PE, CHIPSEQ_BROAD, CHIPSEQ_TRIM_PE]
+        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_PE, CHIPSEQ_NARROW, CHIPSEQ_TRIM_PE],
+        "broad":  [CHIPSEQ_COMMON, CHIPSEQ_PE, CHIPSEQ_BROAD,  CHIPSEQ_TRIM_PE]
     }
 }
