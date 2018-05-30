@@ -63,12 +63,12 @@ def gen_outputs(connect_db):
     for kwargs in connect_db.fetchall(sql_query):
         try:
             kwargs.update({"raw_data":   raw_data,
-                           "peak_type": "broad" if int(kwargs['peak_type'])==2 else "narrow",
+                           "peak_type": "broad" if int(kwargs['peak_type']) == 2 else "narrow",
                            "outputs":    loads(kwargs['outputs']) if kwargs['outputs'] else {}})
             for template in OUTPUT_TEMPLATES[kwargs['exp_id']][kwargs['peak_type']]:
                 kwargs["outputs"].update(fill_template(template, kwargs))
             validate_locations(kwargs)
-            connect_db.execute(f"""UPDATE labdata SET params='{dumps(kwargs["outputs"])}' WHERE uid='{kwargs["exp_id"]}'""")
+            connect_db.execute(f"""UPDATE labdata SET params='{dumps(kwargs["outputs"])}' WHERE uid='{kwargs["uid"]}'""")
         except Exception:
             logger.debug(f"Failed to updated params for {kwargs['uid']}")
             pass
