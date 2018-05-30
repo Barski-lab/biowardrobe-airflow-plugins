@@ -85,8 +85,9 @@ def create_dags():
 
 
 def create_pools():
-    pools = [api_client.get_pool(name="biowardrobe_plugins")]
-    if not pools:
+    try:
+        pools = [api_client.get_pool(name="biowardrobe_plugins")]
+    except Exception:
         api_client.create_pool(name="biowardrobe_plugins", slots=10, description="pool to run BioWardrobe plugins")
 
 
