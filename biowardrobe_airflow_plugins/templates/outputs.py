@@ -98,7 +98,7 @@ CHIPSEQ_NARROW = """
     "macs2_peak_summits": {{
       "location": "{raw_data}/{uid}/{uid}_macs_summits.bed",
       "class": "File"
-    }},
+    }}
   }}
 """
 
@@ -169,15 +169,15 @@ CHIPSEQ_TRIM_PE = """
 
 OUTPUT_TEMPLATES = {
     1: {
-        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_NARROW],
-        "broad":  [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_BROAD]
+        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_NARROW],                  # Checked
+        "broad":  [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_BROAD]                    # Checked
     },
     2: {
         "narrow": [CHIPSEQ_COMMON, CHIPSEQ_PE, CHIPSEQ_NARROW],
         "broad":  [CHIPSEQ_COMMON, CHIPSEQ_PE, CHIPSEQ_BROAD]
     },
     8: {
-        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_NARROW, CHIPSEQ_TRIM_SE],
+        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_NARROW, CHIPSEQ_TRIM_SE], # Checked
         "broad":  [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_BROAD,  CHIPSEQ_TRIM_SE]
     },
     9: {

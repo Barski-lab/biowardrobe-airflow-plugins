@@ -85,11 +85,11 @@ def dict_find(dictionary, key):
         if k == key:
             yield v
         elif isinstance(v, dict):
-            for result in dict_find(key, v):
+            for result in dict_find(v, key):
                 yield result
         elif isinstance(v, list):
             for d in v:
-                for result in dict_find(key, d):
+                for result in dict_find(d, key):
                     yield result
 
 
