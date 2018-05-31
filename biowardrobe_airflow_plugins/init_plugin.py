@@ -105,7 +105,7 @@ def setup_airflow(config):
 def setup_biowardrobe(config):
     db_connection_handler = DirectConnect(config)
     apply_patches(db_connection_handler)
-    # gen_outputs(db_connection_handler)
+    gen_outputs(db_connection_handler)
 
 
 def main(argsl=None):
