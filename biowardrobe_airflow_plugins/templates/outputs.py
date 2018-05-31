@@ -27,17 +27,19 @@ macs2_fragment_stat
                                                                                                         trim_report_downstream:
 """
 
-
-CHIPSEQ_COMMON = """
-  {{
-    "bigwig": {{
-      "location": "{raw_data}/{uid}/{uid}.bigWig",
-      "class": "File"
-    }},
+COMMON = """
     "bowtie_log": {{
       "location": "{raw_data}/{uid}/{uid}.bw",
       "class": "File"
     }},
+    "get_stat_log": {{
+      "location": "{raw_data}/{uid}/{uid}.stat",
+      "class": "File"
+    }}
+"""
+
+CHIP = """
+  {{
     "iaintersect_log": {{
       "location": "{raw_data}/{uid}/{uid}_macs_peaks_iaintersect.log",
       "class": "File"
@@ -58,14 +60,6 @@ CHIPSEQ_COMMON = """
       "location": "{raw_data}/{uid}/{uid}.rmdup",
       "class": "File"
     }},
-    "bambai_pair": {{
-      "location": "{raw_data}/{uid}/{uid}.bam",
-      "class": "File",
-      "secondaryFiles": [{{
-        "location": "{raw_data}/{uid}/{uid}.bam.bai",
-        "class": "File"
-      }}]
-    }},
     "macs2_called_peaks": {{
       "location": "{raw_data}/{uid}/{uid}_macs_peaks.xls",
       "class": "File"
@@ -78,10 +72,6 @@ CHIPSEQ_COMMON = """
       "location": "{raw_data}/{uid}/{uid}_macs.log",
       "class": "File"
     }},
-    "get_stat_log": {{
-      "location": "{raw_data}/{uid}/{uid}.stat",
-      "class": "File"
-    }},
     "macs2_fragment_stat": {{
       "location": "{raw_data}/{uid}/{uid}_fragment_stat.tsv",
       "class": "File"
@@ -89,7 +79,32 @@ CHIPSEQ_COMMON = """
   }}
 """
 
-CHIPSEQ_NARROW = """
+RNA = """
+  {{
+    "star_final_log": {{
+      "location": "{raw_data}/{uid}/{uid}.Log.final.out",
+      "class": "File"
+    }},
+    "star_out_log": {{
+      "location": "{raw_data}/{uid}/{uid}.Log.out",
+      "class": "File"
+    }},
+    "star_progress_log": {{
+      "location": "{raw_data}/{uid}/{uid}.Log.progress.out",
+      "class": "File"
+    }},
+    "star_sj_log": {{
+      "location": "{raw_data}/{uid}/{uid}.SJ.out.tab",
+      "class": "File"
+    }},
+    "rpkm_isoforms": {{
+      "location": "{raw_data}/{uid}/{uid}.isoforms.csv",
+      "class": "File"
+    }}
+  }}
+"""
+
+NARROW = """
   {{
     "macs2_narrow_peaks": {{
       "location": "{raw_data}/{uid}/{uid}_macs_peaks.narrowPeak",
@@ -102,7 +117,7 @@ CHIPSEQ_NARROW = """
   }}
 """
 
-CHIPSEQ_BROAD = """
+BROAD = """
   {{
     "macs2_broad_peaks": {{
       "location": "{raw_data}/{uid}/{uid}_macs_peaks.broadPeak",
@@ -115,7 +130,35 @@ CHIPSEQ_BROAD = """
   }}
 """
 
-CHIPSEQ_SE = """
+TRIM_SE = """
+  {{
+    "trim_report": {{
+      "location": "{raw_data}/{uid}/{uid}.fastq_trimming_report.txt",
+      "class": "File"
+    }}
+  }}
+"""
+
+TRIM_PE = """
+  {{
+    "trim_report_upstream": {{
+      "location": "{raw_data}/{uid}/{uid}.fastq_trimming_report.txt",
+      "class": "File"
+    }},
+    "trim_report_downstream": {{
+      "location": "{raw_data}/{uid}/{uid}_2.fastq_trimming_report.txt",
+      "class": "File"
+    }}
+  }}
+"""
+
+ADD_FIELDS = """
+  {{
+    "promoter": {outputs[promoter]}
+  }}
+"""
+
+SE = """
   {{
     "fastx_statistics": {{
       "location": "{raw_data}/{uid}/{uid}.fastxstat",
@@ -124,7 +167,7 @@ CHIPSEQ_SE = """
   }}
 """
 
-CHIPSEQ_PE = """
+PE = """
   {{
     "fastx_statistics_upstream": {{
       "location": "{raw_data}/{uid}/{uid}.fastxstat",
@@ -137,58 +180,104 @@ CHIPSEQ_PE = """
   }}
 """
 
-CHIPSEQ_TRIM_SE = """
+BIGWIG = """
   {{
-    "trim_report": {{
-      "location": "{raw_data}/{uid}/{uid}.fastxstat",
+    "bigwig": {{
+      "location": "{raw_data}/{uid}/{uid}.bigWig",
       "class": "File"
     }}
   }}
 """
 
-CHIPSEQ_TRIM_PE = """
+BIGWIG_DUTP = """
   {{
-    "trim_report_upstream": {{
-      "location": "{raw_data}/{uid}/{uid}.fastxstat",
+    "bigwig_upstream": {{
+      "location": "{raw_data}/{uid}/{uid}_upstream.bigWig",
       "class": "File"
     }},
-    "trim_report_downstream": {{
-      "location": "{raw_data}/{uid}/{uid}.fastxstat",
+    "bigwig_downstream": {{
+      "location": "{raw_data}/{uid}/{uid}_downstream.bigWig",
       "class": "File"
     }}
   }}
 """
 
-CHIPSEQ_ADD_FIELDS = """
+BAM = """
   {{
-    "promoter": {outputs[promoter]}
+    "bambai_pair": {{
+      "location": "{raw_data}/{uid}/{uid}.bam",
+      "class": "File",
+      "secondaryFiles": [{{
+        "location": "{raw_data}/{uid}/{uid}.bam.bai",
+        "class": "File"
+      }}]
+    }}
+  }}
+"""
+
+BAM_MITOCH = """
+  {{
+    "bam_merged": {{
+      "location": "{raw_data}/{uid}/{uid}.bam",
+      "class": "File"
+    }}
   }}
 """
 
 
-
-# |  1 | DNA-Seq                         |
-# |  2 | DNA-Seq pair                    |
-# |  8 | DNA-Seq Trim Galore             |
-# |  9 | DNA-Seq pair Trim Galore        |
-
+"""
++----+---------------------------------+----------------------------------+
+| id | etype                           | workflow                         |
++----+---------------------------------+----------------------------------+
+|  1 | DNA-Seq                         | chipseq-se.cwl                   |
+|  2 | DNA-Seq pair                    | chipseq-pe.cwl                   |
+|  8 | DNA-Seq Trim Galore             | trim-chipseq-se.cwl              |
+|  9 | DNA-Seq pair Trim Galore        | trim-chipseq-pe.cwl              |
+|    |                                 |                                  |
+|  3 | RNA-Seq                         | rnaseq-se.cwl                    |
+|  4 | RNA-Seq pair                    | rnaseq-pe.cwl                    |
+|  5 | RNA-Seq dUTP                    | rnaseq-se-dutp.cwl               |
+|  6 | RNA-Seq dUTP pair               | rnaseq-pe-dutp.cwl               |
+|    |                                 |                                  |
+|  7 | RNA-Seq dUTP Mitochondrial      | rnaseq-se-dutp-mitochondrial.cwl |
+| 11 | RNA-Seq dUTP pair Mitochondrial | rnaseq-pe-dutp-mitochondrial.cwl |
++----+---------------------------------+----------------------------------+
+"""
 
 
 OUTPUT_TEMPLATES = {
     1: {
-        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_NARROW, CHIPSEQ_ADD_FIELDS],                   # Checked
-        "broad":  [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_BROAD, CHIPSEQ_ADD_FIELDS]                     # Checked
+        "narrow": [COMMON, CHIP, BAM, BIGWIG, SE, NARROW, ADD_FIELDS],                   # Checked
+        "broad":  [COMMON, CHIP, BAM, BIGWIG, SE, BROAD,  ADD_FIELDS]                    # Checked
     },
     2: {
-        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_PE, CHIPSEQ_NARROW, CHIPSEQ_ADD_FIELDS],
-        "broad":  [CHIPSEQ_COMMON, CHIPSEQ_PE, CHIPSEQ_BROAD, CHIPSEQ_ADD_FIELDS]
+        "narrow": [COMMON, CHIP, BAM, BIGWIG, PE, NARROW, ADD_FIELDS],
+        "broad":  [COMMON, CHIP, BAM, BIGWIG, PE, BROAD,  ADD_FIELDS]
     },
     8: {
-        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_NARROW, CHIPSEQ_TRIM_SE, CHIPSEQ_ADD_FIELDS],  # Checked
-        "broad":  [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_BROAD,  CHIPSEQ_TRIM_SE, CHIPSEQ_ADD_FIELDS]
+        "narrow": [COMMON, CHIP, BAM, BIGWIG, SE, NARROW, TRIM_SE, ADD_FIELDS],          # Checked
+        "broad":  [COMMON, CHIP, BAM, BIGWIG, SE, BROAD,  TRIM_SE, ADD_FIELDS]
     },
     9: {
-        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_PE, CHIPSEQ_NARROW, CHIPSEQ_TRIM_PE, CHIPSEQ_ADD_FIELDS],
-        "broad":  [CHIPSEQ_COMMON, CHIPSEQ_PE, CHIPSEQ_BROAD,  CHIPSEQ_TRIM_PE, CHIPSEQ_ADD_FIELDS]
+        "narrow": [COMMON, CHIP, BAM, BIGWIG, PE, NARROW, TRIM_PE, ADD_FIELDS],
+        "broad":  [COMMON, CHIP, BAM, BIGWIG, PE, BROAD,  TRIM_PE, ADD_FIELDS]
+    },
+    3: {
+        "narrow": [COMMON, RNA, BIGWIG, SE, BAM]
+    },
+    4: {
+        "narrow": [COMMON, RNA, BIGWIG, PE, BAM]
+    },
+    5: {
+        "narrow": [COMMON, RNA, BIGWIG_DUTP, SE, BAM]
+    },
+    6: {
+        "narrow": [COMMON, RNA, BIGWIG_DUTP, PE, BAM]
+    },
+    7: {
+        "narrow": [COMMON, RNA, BIGWIG_DUTP, SE, BAM_MITOCH]
+    },
+    11: {
+        "narrow": [COMMON, RNA, BIGWIG_DUTP, PE, BAM_MITOCH]
     }
 }
