@@ -161,7 +161,7 @@ CHIPSEQ_TRIM_PE = """
 
 CHIPSEQ_ADD_FIELDS = """
   {{
-    "promoter": {outputs['promoter']}
+    "promoter": {outputs[promoter]}
   }}
 """
 
@@ -176,15 +176,15 @@ CHIPSEQ_ADD_FIELDS = """
 
 OUTPUT_TEMPLATES = {
     1: {
-        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_NARROW, CHIPSEQ_ADD_FIELDS],                  # Checked
-        "broad":  [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_BROAD, CHIPSEQ_ADD_FIELDS]                    # Checked
+        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_NARROW, CHIPSEQ_ADD_FIELDS],                   # Checked
+        "broad":  [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_BROAD, CHIPSEQ_ADD_FIELDS]                     # Checked
     },
     2: {
         "narrow": [CHIPSEQ_COMMON, CHIPSEQ_PE, CHIPSEQ_NARROW, CHIPSEQ_ADD_FIELDS],
         "broad":  [CHIPSEQ_COMMON, CHIPSEQ_PE, CHIPSEQ_BROAD, CHIPSEQ_ADD_FIELDS]
     },
     8: {
-        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_NARROW, CHIPSEQ_TRIM_SE, CHIPSEQ_ADD_FIELDS], # Checked
+        "narrow": [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_NARROW, CHIPSEQ_TRIM_SE, CHIPSEQ_ADD_FIELDS],  # Checked
         "broad":  [CHIPSEQ_COMMON, CHIPSEQ_SE, CHIPSEQ_BROAD,  CHIPSEQ_TRIM_SE, CHIPSEQ_ADD_FIELDS]
     },
     9: {
