@@ -253,7 +253,7 @@ steps:
       input_bed: sort_bed/sorted_file
       chrom_length_file: chrom_length_file
       bed_type:
-        default: "bed6"
+        default: "bed4"
       output_filename:
         source: bambai_pair
         valueFrom: $(self.location.split('/').slice(-1)[0].split('.').slice(0,-1).join('.')+"_super_enhancer.bb")
