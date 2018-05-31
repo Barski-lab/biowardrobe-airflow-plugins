@@ -65,6 +65,7 @@ def gen_outputs(connect_db):
             kwargs.update({"raw_data":   raw_data,
                            "peak_type": "broad" if int(kwargs['peak_type']) == 2 else "narrow",
                            "outputs":    loads(kwargs['outputs']) if kwargs['outputs'] else {}})
+            kwargs["outputs"]["promoter"] = kwargs["outputs"]["promoter"] if "promoter" in kwargs["outputs"] else 1000
             for template in OUTPUT_TEMPLATES[kwargs['exp_id']][kwargs['peak_type']]:
                 kwargs["outputs"].update(fill_template(template, kwargs))
             validate_locations(kwargs)
