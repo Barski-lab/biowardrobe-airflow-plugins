@@ -248,9 +248,35 @@ steps:
       baseCommand: ["sort"]
       doc: Tool sorts data from `unsorted_file` by `key`
 
+  reduce_bed:
+    in:
+      input_file: sort_bed/sorted_file
+    out: [output_file]
+    run:
+      cwlVersion: v1.0
+      class: CommandLineTool
+      requirements:
+      - class: DockerRequirement
+        dockerPull: biowardrobe2/scidap:v0.0.3
+      inputs:
+        input_file:
+          type: File
+          inputBinding:
+            position: 5
+          doc: Input BED6 file to be reduced to BED4
+      outputs:
+        output_file:
+          type: File
+          outputBinding:
+            glob: "*"
+      baseCommand: [bash, '-c']
+      arguments:
+      - cat $0 | cut -f 1-4 > `basename $0`
+      doc: Tool converts BED6 to BED4 by reducing column numbers
+
   bed_to_bigbed:
     in:
-      input_bed: sort_bed/sorted_file
+      input_bed: reduce_bed/output_file
       chrom_length_file: chrom_length_file
       bed_type:
         default: "bed4"
