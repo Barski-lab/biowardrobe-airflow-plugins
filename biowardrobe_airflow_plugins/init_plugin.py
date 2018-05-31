@@ -70,6 +70,7 @@ def gen_outputs(connect_db):
                 kwargs["outputs"].update(fill_template(template, kwargs))
             validate_locations(kwargs)
             connect_db.execute(f"""UPDATE labdata SET params='{dumps(kwargs["outputs"])}' WHERE uid='{kwargs["uid"]}'""")
+            logger.info(f"""Update params for {kwargs['uid']}\n {dumps(kwargs["outputs"], indent=4)}""")
         except Exception:
             logger.debug(f"Failed to updated params for {kwargs['uid']}")
             pass
