@@ -17,5 +17,5 @@ UPDATE `ems`.`plugintype` SET
   upload_rules='{{
       "upload_bigbed": "{uid}_super_enhancer.bb"
   }}',
-  etype_id='[1,2,8,7]'
+  etype_id='[1,2,8,9]'
 WHERE ptype='Super Enhancer';

@@ -238,15 +238,13 @@ MODEL_R = """
 +----+---------------------------------+----------------------------------+
 |  1 | DNA-Seq                         | chipseq-se.cwl                   |
 |  2 | DNA-Seq pair                    | chipseq-pe.cwl                   |
-|  8 | DNA-Seq Trim Galore             | trim-chipseq-se.cwl              |
-|  9 | DNA-Seq pair Trim Galore        | trim-chipseq-pe.cwl              |
-|    |                                 |                                  |
 |  3 | RNA-Seq                         | rnaseq-se.cwl                    |
 |  4 | RNA-Seq pair                    | rnaseq-pe.cwl                    |
 |  5 | RNA-Seq dUTP                    | rnaseq-se-dutp.cwl               |
 |  6 | RNA-Seq dUTP pair               | rnaseq-pe-dutp.cwl               |
-|    |                                 |                                  |
 |  7 | RNA-Seq dUTP Mitochondrial      | rnaseq-se-dutp-mitochondrial.cwl |
+|  8 | DNA-Seq Trim Galore             | trim-chipseq-se.cwl              |
+|  9 | DNA-Seq pair Trim Galore        | trim-chipseq-pe.cwl              |
 | 11 | RNA-Seq dUTP pair Mitochondrial | rnaseq-pe-dutp-mitochondrial.cwl |
 +----+---------------------------------+----------------------------------+
 """
@@ -254,15 +252,15 @@ MODEL_R = """
 
 OUTPUT_TEMPLATES = {
     1: {
-        "narrow": [COMMON, CHIP, BAM,             BIGWIG,              SE,     NARROW,        MODEL_R,          ADD_FIELDS],          # Checked
-        "broad":  [COMMON, CHIP, BAM,             BIGWIG,              SE,             BROAD, MODEL_R,          ADD_FIELDS]           # Checked
+        "narrow": [COMMON, CHIP, BAM,             BIGWIG,              SE,     NARROW,        MODEL_R,          ADD_FIELDS],
+        "broad":  [COMMON, CHIP, BAM,             BIGWIG,              SE,             BROAD, MODEL_R,          ADD_FIELDS]
     },
     2: {
         "narrow": [COMMON, CHIP, BAM,             BIGWIG,                  PE, NARROW,                          ADD_FIELDS],
         "broad":  [COMMON, CHIP, BAM,             BIGWIG,                  PE,         BROAD,                   ADD_FIELDS]
     },
     8: {
-        "narrow": [COMMON, CHIP, BAM,             BIGWIG,              SE,     NARROW,        MODEL_R, TRIM_SE, ADD_FIELDS],          # Checked
+        "narrow": [COMMON, CHIP, BAM,             BIGWIG,              SE,     NARROW,        MODEL_R, TRIM_SE, ADD_FIELDS],
         "broad":  [COMMON, CHIP, BAM,             BIGWIG,              SE,             BROAD, MODEL_R, TRIM_SE, ADD_FIELDS]
     },
     9: {
