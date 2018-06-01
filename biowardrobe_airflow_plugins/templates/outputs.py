@@ -28,6 +28,7 @@ macs2_fragment_stat
 """
 
 COMMON = """
+  {{
     "bowtie_log": {{
       "location": "{raw_data}/{uid}/{uid}.bw",
       "class": "File"
@@ -36,6 +37,7 @@ COMMON = """
       "location": "{raw_data}/{uid}/{uid}.stat",
       "class": "File"
     }}
+  }}
 """
 
 CHIP = """
@@ -62,10 +64,6 @@ CHIP = """
     }},
     "macs2_called_peaks": {{
       "location": "{raw_data}/{uid}/{uid}_macs_peaks.xls",
-      "class": "File"
-    }},
-    "macs2_moder_r": {{
-      "location": "{raw_data}/{uid}/{uid}_macs_model.r",
       "class": "File"
     }},
     "macs2_log": {{
@@ -224,6 +222,15 @@ BAM_MITOCH = """
   }}
 """
 
+MODEL_R = """
+  {{
+    "macs2_moder_r": {{
+      "location": "{raw_data}/{uid}/{uid}_macs_model.r",
+      "class": "File"
+    }}
+  }}
+"""
+
 
 """
 +----+---------------------------------+----------------------------------+
@@ -247,37 +254,37 @@ BAM_MITOCH = """
 
 OUTPUT_TEMPLATES = {
     1: {
-        "narrow": [COMMON, CHIP, BAM, BIGWIG, SE, NARROW, ADD_FIELDS],                   # Checked
-        "broad":  [COMMON, CHIP, BAM, BIGWIG, SE, BROAD,  ADD_FIELDS]                    # Checked
+        "narrow": [COMMON, CHIP, BAM,             BIGWIG,              SE,     NARROW,        MODEL_R,          ADD_FIELDS],          # Checked
+        "broad":  [COMMON, CHIP, BAM,             BIGWIG,              SE,             BROAD, MODEL_R,          ADD_FIELDS]           # Checked
     },
     2: {
-        "narrow": [COMMON, CHIP, BAM, BIGWIG, PE, NARROW, ADD_FIELDS],
-        "broad":  [COMMON, CHIP, BAM, BIGWIG, PE, BROAD,  ADD_FIELDS]
+        "narrow": [COMMON, CHIP, BAM,             BIGWIG,                  PE, NARROW,                          ADD_FIELDS],
+        "broad":  [COMMON, CHIP, BAM,             BIGWIG,                  PE,         BROAD,                   ADD_FIELDS]
     },
     8: {
-        "narrow": [COMMON, CHIP, BAM, BIGWIG, SE, NARROW, TRIM_SE, ADD_FIELDS],          # Checked
-        "broad":  [COMMON, CHIP, BAM, BIGWIG, SE, BROAD,  TRIM_SE, ADD_FIELDS]
+        "narrow": [COMMON, CHIP, BAM,             BIGWIG,              SE,     NARROW,        MODEL_R, TRIM_SE, ADD_FIELDS],          # Checked
+        "broad":  [COMMON, CHIP, BAM,             BIGWIG,              SE,             BROAD, MODEL_R, TRIM_SE, ADD_FIELDS]
     },
     9: {
-        "narrow": [COMMON, CHIP, BAM, BIGWIG, PE, NARROW, TRIM_PE, ADD_FIELDS],
-        "broad":  [COMMON, CHIP, BAM, BIGWIG, PE, BROAD,  TRIM_PE, ADD_FIELDS]
+        "narrow": [COMMON, CHIP, BAM,             BIGWIG,                  PE, NARROW,                 TRIM_PE, ADD_FIELDS],
+        "broad":  [COMMON, CHIP, BAM,             BIGWIG,                  PE,         BROAD,          TRIM_PE, ADD_FIELDS]
     },
     3: {
-        "narrow": [COMMON, RNA, BIGWIG, SE, BAM]
+        "narrow": [COMMON, RNA,  BAM,             BIGWIG,              SE,                                      ADD_FIELDS]
     },
     4: {
-        "narrow": [COMMON, RNA, BIGWIG, PE, BAM]
+        "narrow": [COMMON, RNA,  BAM,             BIGWIG,                  PE,                                  ADD_FIELDS]
     },
     5: {
-        "narrow": [COMMON, RNA, BIGWIG_DUTP, SE, BAM]
+        "narrow": [COMMON, RNA,  BAM,                     BIGWIG_DUTP, SE,                                      ADD_FIELDS]
     },
     6: {
-        "narrow": [COMMON, RNA, BIGWIG_DUTP, PE, BAM]
+        "narrow": [COMMON, RNA,  BAM,                     BIGWIG_DUTP,     PE,                                  ADD_FIELDS]
     },
     7: {
-        "narrow": [COMMON, RNA, BIGWIG_DUTP, SE, BAM_MITOCH]
+        "narrow": [COMMON, RNA,       BAM_MITOCH,         BIGWIG_DUTP, SE,                                      ADD_FIELDS]
     },
     11: {
-        "narrow": [COMMON, RNA, BIGWIG_DUTP, PE, BAM_MITOCH]
+        "narrow": [COMMON, RNA,       BAM_MITOCH,         BIGWIG_DUTP,     PE,                                  ADD_FIELDS]
     }
 }
