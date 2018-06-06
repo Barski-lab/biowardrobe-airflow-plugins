@@ -11,7 +11,12 @@
     biowardrobe-plugin-init
 ```
 
-To trigger plugin by name for the specific experiment UID
+To trigger all available plugins by experiment UID
 ```bash
-    airflow trigger_dag --conf "{\"uid\":\"UID\"}" super-enhancer
+    airflow trigger_dag --conf "{\"uid\":\"UID\"}" biowardrobe_plugins
+```
+
+To trigger the specific plugin by experiment UID
+```bash
+    airflow trigger_dag --conf "{\"uid\":\"UID\"}" <plugin's name>
 ```
