@@ -62,3 +62,17 @@ def get_data(uid):
 
     logger.debug(f"Collected data for: {uid}\n{dumps(kwargs, indent=4)}")
     return kwargs
+
+
+def get_plugins(uid):
+    logger.debug(f"Collecting plugins for: {uid}")
+    connect_db = HookConnect()
+    exp_type_id = connect_db.fetchone(f"""SELECT e.id FROM experimenttype e
+                                          INNER JOIN (labdata l) ON (e.id=l.experimenttype_id)
+                                          WHERE l.uid='{uid}'""")["id"]
+    plugins = [plugin for plugin in connect_db.fetchall("SELECT id, ptype, workflow, etype_id FROM plugintype")
+               if exp_type_id in loads(plugin["etype_id"])]
+    return plugins
+
+
+

@@ -73,17 +73,21 @@ def gen_outputs(connect_db):
             logger.info(f"""Update params for {kwargs['uid']}\n {dumps(kwargs["outputs"], indent=4)}""")
         except Exception:
             logger.debug(f"Failed to updated params for {kwargs['uid']}")
-            pass
+
+
+def export_dag(template, filename):
+    output_filename = os.path.abspath(os.path.join(DAGS_FOLDER, os.path.splitext(filename)[0]+".py"))
+    with open(output_filename, 'w') as output_stream:
+        output_stream.write(template.format(filename))
 
 
 def create_dags():
     current_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cwls")
     template = u"""#!/usr/bin/env python3\nfrom airflow import DAG\nfrom biowardrobe_airflow_plugins import biowardrobe_plugin\ndag = biowardrobe_plugin("{}")"""
     for filename, path in get_files(current_dir).items():
-        output_filename = os.path.abspath(os.path.join(DAGS_FOLDER, os.path.splitext(filename)[0]+".py"))
-        with open(output_filename, 'w') as output_stream:
-            output_stream.write(template.format(filename))
-
+        export_dag(template, filename)
+    biowardrobe_plugin_trigger = u"#!/usr/bin/env python3\nfrom airflow import DAG\nfrom biowardrobe_airflow_plugins import biowardrobe_plugin_trigger\ndag = biowardrobe_plugin_trigger()"
+    export_dag(biowardrobe_plugin_trigger, "biowardrobe_plugins")
 
 def create_pools():
     try:

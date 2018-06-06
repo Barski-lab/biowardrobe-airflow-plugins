@@ -1,1 +1,1 @@
-from .create_plugin import create_plugin as biowardrobe_plugin
+from .create_plugin import create_plugin as biowardrobe_plugin, create_plugin_trigger as biowardrobe_plugin_trigger
