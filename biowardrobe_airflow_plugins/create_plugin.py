@@ -21,7 +21,8 @@ def create_plugin_trigger():
     dag = DAG(
         dag_id='biowardrobe_plugins',
         default_args = {'pool': 'biowardrobe_plugins',
-                        'start_date': datetime.now()}
+                        'start_date': datetime.now()},
+        schedule_interval=None
     )
     trigger = BioWardrobePluginTrigger(dag=dag)
     return dag
