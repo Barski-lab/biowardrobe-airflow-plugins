@@ -94,7 +94,7 @@ steps:
       class: CommandLineTool
       requirements:
       - class: DockerRequirement
-        dockerPull: biowardrobe2/scidap-addons:v0.0.5
+        dockerPull: biowardrobe2/rose:v0.0.2
       inputs:
         islands_file:
           type: File
@@ -134,7 +134,7 @@ steps:
       class: CommandLineTool
       requirements:
       - class: DockerRequirement
-        dockerPull: biowardrobe2/scidap-addons:v0.0.5
+        dockerPull: biowardrobe2/rose:v0.0.2
       inputs:
         binding_sites_file:
           type: File
