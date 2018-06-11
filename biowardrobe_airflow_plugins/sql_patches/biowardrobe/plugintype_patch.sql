@@ -19,3 +19,22 @@ UPDATE `ems`.`plugintype` SET
   }}',
   etype_id='[1,2,8,9]'
 WHERE ptype='Super Enhancer';
+
+# Plot RNA-Seq
+INSERT IGNORE INTO `ems`.`plugintype` SELECT NULL, 'Plot RNA-Seq', '', '', '','';
+UPDATE `ems`.`plugintype` SET
+  workflow='plot-rna.cwl',
+  template='{{
+    "annotation_file": {{"class": "File", "location": "{indices}/annotations/{genome_type}/refgene.tsv"}},
+    "bambai_pair": {{"class": "File", "location": "{outputs[bambai_pair][location]}"}},
+    "isoforms_file": {{"class": "File", "location": "{outputs[rpkm_isoforms][location]}"}},
+    "stats_file": {{"class": "File", "location": "{outputs[get_stat_log][location]}"}},
+    "pair": {pair},
+    "dutp": {dutp},
+    "threads": {threads},
+    "output_folder": "{raw_data}/{uid}",
+    "uid": "{uid}"
+  }}',
+  upload_rules='{{}}',
+  etype_id='[3,4,5,6]'
+WHERE ptype='Plot RNA-Seq';
