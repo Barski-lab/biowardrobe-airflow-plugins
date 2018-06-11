@@ -25,10 +25,10 @@ INSERT IGNORE INTO `ems`.`plugintype` SELECT NULL, 'Plot RNA-Seq', '', '', '',''
 UPDATE `ems`.`plugintype` SET
   workflow='plot-rna.cwl',
   template='{{
-    "annotation_file": {{"class": "File", "location": "{indices}/annotations/{genome_type}/refgene.tsv"}},
-    "bambai_pair": {{"class": "File", "location": "{outputs[bambai_pair][location]}"}},
-    "isoforms_file": {{"class": "File", "location": "{outputs[rpkm_isoforms][location]}"}},
-    "stats_file": {{"class": "File", "location": "{outputs[get_stat_log][location]}"}},
+    "annotation_file": {{"class": "File", "location": "{indices}/annotations/{genome_type}/refgene.tsv", "format": "http://edamontology.org/format_3475"}},
+    "bambai_pair": {{"class": "File", "location": "{outputs[bambai_pair][location]}", "format": "http://edamontology.org/format_2572"}},
+    "isoforms_file": {{"class": "File", "location": "{outputs[rpkm_isoforms][location]}", "format": "http://edamontology.org/format_3752"}},
+    "stats_file": {{"class": "File", "location": "{outputs[get_stat_log][location]}", "format": "http://edamontology.org/format_2330"}},
     "pair": "{pair}",
     "dutp": "{dutp}",
     "threads": {threads},
