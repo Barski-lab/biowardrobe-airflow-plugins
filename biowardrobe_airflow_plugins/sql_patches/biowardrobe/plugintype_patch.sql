@@ -29,8 +29,8 @@ UPDATE `ems`.`plugintype` SET
     "bambai_pair": {{"class": "File", "location": "{outputs[bambai_pair][location]}"}},
     "isoforms_file": {{"class": "File", "location": "{outputs[rpkm_isoforms][location]}"}},
     "stats_file": {{"class": "File", "location": "{outputs[get_stat_log][location]}"}},
-    "pair": {pair},
-    "dutp": {dutp},
+    "pair": "{pair}",
+    "dutp": "{dutp}",
     "threads": {threads},
     "output_folder": "{raw_data}/{uid}",
     "uid": "{uid}"
