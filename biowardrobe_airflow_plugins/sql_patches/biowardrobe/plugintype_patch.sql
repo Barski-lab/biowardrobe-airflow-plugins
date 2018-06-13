@@ -38,3 +38,18 @@ UPDATE `ems`.`plugintype` SET
   upload_rules='{{}}',
   etype_id='[3,4,5,6]'
 WHERE ptype='Plot RNA-Seq';
+
+# Saturation DNA-Seq
+INSERT IGNORE INTO `ems`.`plugintype` SELECT NULL, 'Saturation DNA-Seq', '', '', '','';
+UPDATE `ems`.`plugintype` SET
+  workflow='satscript.cwl',
+  template='{{
+    "bam_file": {{"class": "File", "location": "{outputs[bambai_pair][location]}", "format": "http://edamontology.org/format_2572"}},
+    "macs_log": {{"class": "File", "location": "{outputs[macs2_log][location]}", "format": "http://edamontology.org/format_2330"}},
+    "output_prefix": "{uid}_default_",
+    "output_folder": "{raw_data}/{uid}",
+    "uid": "{uid}"
+  }}',
+  upload_rules='{{}}',
+  etype_id='[1,2,8,9]'
+WHERE ptype='Saturation DNA-Seq';
