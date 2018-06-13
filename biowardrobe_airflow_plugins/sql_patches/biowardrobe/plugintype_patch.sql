@@ -1,4 +1,4 @@
-3# Super Enhancer
+# Super Enhancer
 INSERT IGNORE INTO `ems`.`plugintype` SELECT NULL, 'Super Enhancer', '', '', '','';
 UPDATE `ems`.`plugintype` SET
   workflow='super-enhancer.cwl',
