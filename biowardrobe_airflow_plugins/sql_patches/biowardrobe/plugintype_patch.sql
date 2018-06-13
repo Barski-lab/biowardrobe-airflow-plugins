@@ -1,4 +1,4 @@
-# Super Enhancer
+3# Super Enhancer
 INSERT IGNORE INTO `ems`.`plugintype` SELECT NULL, 'Super Enhancer', '', '', '','';
 UPDATE `ems`.`plugintype` SET
   workflow='super-enhancer.cwl',
@@ -48,6 +48,7 @@ UPDATE `ems`.`plugintype` SET
     "macs_log": {{"class": "File", "location": "{outputs[macs2_log][location]}", "format": "http://edamontology.org/format_2330"}},
     "output_prefix": "{uid}_default_",
     "output_folder": "{raw_data}/{uid}",
+    "output_suffixes": ["003.png", "004.png", "005.png", "saturation.txt"],
     "uid": "{uid}"
   }}',
   upload_rules='{{}}',
