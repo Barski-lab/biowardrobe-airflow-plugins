@@ -1,11 +1,12 @@
 import os
 import uuid
 import logging
+import sys
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
 from airflow import settings
 from airflow.models import (BaseOperator, DagRun)
-from biowardrobe_airflow_plugins.utils.analyze import get_plugins
+from biowardrobe_airflow_plugins.utils.analyze import (get_plugins, get_active_plugins)
 
 
 logger = logging.getLogger(__name__)
@@ -19,7 +20,13 @@ class BioWardrobePluginTrigger(BaseOperator):
     def execute(self, context):
         uid = context['dag_run'].conf['uid']
         plugins = get_plugins(uid)
-        logger.info(f"""Plugins found for {uid}:\n{[item['ptype'] for item in plugins]}""")
+        active_plugins = get_active_plugins(uid)
+
+        if active_plugins:
+            for active_plugin in active_plugins:
+                logger.info(f"""Active plugins found for {uid}:\n{active_plugin['dag_id']} - {active_plugin['run_id']}""")
+            sys.exit(0)
+
         for plugin in plugins:
             try:
                 dag_id = os.path.splitext(plugin['workflow'])[0].replace(".", "_dot_")

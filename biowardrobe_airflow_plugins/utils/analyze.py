@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 import logging
 import decimal
+import os
 from json import dumps, loads
+from airflow.models import DagRun
+from airflow.utils.state import State
 from biowardrobe_airflow_plugins.utils.connect import HookConnect
 from biowardrobe_airflow_plugins.utils.func import (norm_path, fill_template)
 
@@ -75,4 +78,9 @@ def get_plugins(uid):
     return plugins
 
 
-
+def get_active_plugins (uid):
+    dag_ids = [os.path.splitext(plugin['workflow'])[0].replace(".", "_dot_") for plugin in get_plugins(uid)]
+    return [{"dag_id": dag_id,
+             "run_id": dagrun.run_id} for dag_id in dag_ids
+                                          for dagrun in DagRun.find(dag_id, state=State.RUNNING)
+                                              if uid in dagrun.run_id]
