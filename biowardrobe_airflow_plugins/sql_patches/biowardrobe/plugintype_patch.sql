@@ -46,11 +46,25 @@ UPDATE `ems`.`plugintype` SET
   template='{{
     "bam_file": {{"class": "File", "location": "{outputs[bambai_pair][location]}", "format": "http://edamontology.org/format_2572"}},
     "macs_log": {{"class": "File", "location": "{outputs[macs2_log][location]}", "format": "http://edamontology.org/format_2330"}},
-    "output_prefix": "{uid}_default_",
+    "output_prefix": "{uid}_default_sat_",
     "output_folder": "{raw_data}/{uid}",
-    "output_suffixes": ["003.png", "004.png", "005.png", "saturation.txt"],
     "uid": "{uid}"
   }}',
   upload_rules='{{}}',
   etype_id='[1,2,8,9]'
 WHERE ptype='Saturation DNA-Seq';
+
+# Plot DNA-Seq
+INSERT IGNORE INTO `ems`.`plugintype` SELECT NULL, 'Plot DNA-Seq', '', '', '','';
+UPDATE `ems`.`plugintype` SET
+  workflow='plot-dna.cwl',
+  template='{{
+    "islands_file": {{"class": "File", "location": "{outputs[iaintersect_result][location]}", "format": "http://edamontology.org/format_3475"}},
+    "bam_file": {{"class": "File", "location": "{outputs[bambai_pair][location]}", "format": "http://edamontology.org/format_2572"}},
+    "output_prefix": "{uid}_default_plot_",
+    "output_folder": "{raw_data}/{uid}",
+    "uid": "{uid}"
+  }}',
+  upload_rules='{{}}',
+  etype_id='[1,2,8,9]'
+WHERE ptype='Plot DNA-Seq';
