@@ -60,7 +60,7 @@ UPDATE `ems`.`plugintype` SET
   workflow='plot-dna.cwl',
   template='{{
     "islands_file": {{"class": "File", "location": "{outputs[iaintersect_result][location]}", "format": "http://edamontology.org/format_3475"}},
-    "bam_file": {{"class": "File", "location": "{outputs[bambai_pair][location]}", "format": "http://edamontology.org/format_2572"}},
+    "bambai_pair": {{"class": "File", "location": "{outputs[bambai_pair][location]}", "format": "http://edamontology.org/format_2572"}},
     "output_prefix": "{uid}_default_plot_",
     "output_folder": "{raw_data}/{uid}",
     "uid": "{uid}"
