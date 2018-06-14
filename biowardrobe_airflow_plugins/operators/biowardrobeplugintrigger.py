@@ -19,14 +19,12 @@ class BioWardrobePluginTrigger(BaseOperator):
 
     def execute(self, context):
         uid = context['dag_run'].conf['uid']
-        plugins = get_plugins(uid)
         active_plugins = get_active_plugins(uid)
-
         if active_plugins:
             for active_plugin in active_plugins:
                 logger.info(f"""Active plugins found for {uid}:\n{active_plugin['dag_id']} - {active_plugin['run_id']}""")
         else:
-            for plugin in plugins:
+            for plugin in get_plugins(uid):
                 try:
                     dag_id = os.path.splitext(plugin['workflow'])[0].replace(".", "_dot_")
                     run_id = "__".join(["trig", uid, str(uuid.uuid4())])
