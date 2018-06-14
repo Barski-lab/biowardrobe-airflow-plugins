@@ -21,8 +21,9 @@ class BioWardrobePluginTrigger(BaseOperator):
         uid = context['dag_run'].conf['uid']
         active_plugins = get_active_plugins(uid)
         if active_plugins:
+            logger.info(f"""Active plugins found for {uid}""")
             for active_plugin in active_plugins:
-                logger.info(f"""Active plugins found for {uid}:\n{active_plugin['dag_id']} - {active_plugin['run_id']}""")
+                logger.info(f"""{active_plugin['dag_id']} - {active_plugin['run_id']}""")
         else:
             for plugin in get_plugins(uid):
                 try:
