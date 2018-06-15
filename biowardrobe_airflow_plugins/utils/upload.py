@@ -15,7 +15,9 @@ class Uploader:
 
 def process_results(upload_rules, uid, output_folder, clean=False):
     for func, filename in upload_rules.items():
-        Uploader(UPLOAD_FUNCTIONS[func]).execute(uid, os.path.join(output_folder, filename, clean=clean))
+        Uploader(UPLOAD_FUNCTIONS[func]).execute(uid,
+                                                 os.path.join(output_folder, filename),
+                                                 clean=clean)
 
 
 def upload_bigbed(self, uid, filename, clean):
