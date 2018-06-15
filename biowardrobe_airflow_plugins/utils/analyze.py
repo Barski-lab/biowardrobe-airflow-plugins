@@ -8,6 +8,7 @@ from airflow.models import DagRun
 from airflow.utils.state import State
 from biowardrobe_airflow_plugins.utils.connect import HookConnect
 from biowardrobe_airflow_plugins.utils.func import (norm_path, fill_template)
+from biowardrobe_airflow_plugins.utils.upload import process_results
 
 
 logger = logging.getLogger(__name__)
@@ -86,8 +87,16 @@ def get_active_plugins (uid):
                                           for dagrun in DagRun.find(dag_id, state=State.RUNNING)
                                               if uid in dagrun.run_id]
 
-def clean_workspace(uid, pattern):
-    logger.debug(f"Cleaning workspace for: {uid}")
+
+def clean_database(uid):
+    for workflow, plugin_data in get_data(uid)['plugins'].items():
+        process_results(upload_rules=plugin_data['upload_rules'],
+                        uid=uid,
+                        output_folder=plugin_data['job']['output_folder'],
+                        clean=True)
+
+
+def clean_files(uid, pattern):
     connect_db = HookConnect()
     settings = connect_db.get_settings()
     working_dir = norm_path("/".join((settings['wardrobe'], settings['preliminary'], uid)))
@@ -95,3 +104,10 @@ def clean_workspace(uid, pattern):
         if re.match(pattern, file):
             logger.info(f"Removing {os.path.join(working_dir, file)}")
             os.remove(os.path.join(working_dir, file))
+
+
+def clean_workspace(uid, pattern):
+    logger.debug(f"Cleaning workspace for: {uid}")
+    clean_database(uid)
+    clean_files(uid, pattern)
+

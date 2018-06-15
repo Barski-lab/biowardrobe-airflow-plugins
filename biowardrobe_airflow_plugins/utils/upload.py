@@ -13,19 +13,23 @@ class Uploader:
             self.execute = types.MethodType(func, self)
 
 
-def process_results(upload_rules, uid, output_folder):
+def process_results(upload_rules, uid, output_folder, clean=False):
     for func, filename in upload_rules.items():
-        Uploader(UPLOAD_FUNCTIONS[func]).execute(uid, os.path.join(output_folder, filename))
+        Uploader(UPLOAD_FUNCTIONS[func]).execute(uid, os.path.join(output_folder, filename, clean=clean))
 
 
-def upload_bigbed(self, uid, filename):
-    logger.debug(f"Uploading bigBed file: {filename}")
+def upload_bigbed(self, uid, filename, clean):
+    logger.debug(f"Processing bigBed file: {filename}")
     connect_db = HookConnect()
     db_name = connect_db.fetchone(f"SELECT g.db FROM labdata l INNER JOIN genome g ON g.id=l.genome_id WHERE l.uid='{uid}'")['db']
     table_name = db_name + '.`' + str(uid).replace("-", "_") + '_senhncr_f_wtrack`'
+    logger.debug(f"Drop table {table_name}")
     connect_db.execute(f"DROP TABLE IF EXISTS {table_name}")
-    connect_db.execute(f"CREATE TABLE {table_name} (fileName VARCHAR(255) not NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8")
-    connect_db.execute(f"INSERT INTO {table_name} VALUES ('{filename}')")
+    if not clean:
+        logger.debug(f"Create table {table_name}")
+        connect_db.execute(f"CREATE TABLE {table_name} (fileName VARCHAR(255) not NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8")
+        connect_db.execute(f"INSERT INTO {table_name} VALUES ('{filename}')")
+
 
 UPLOAD_FUNCTIONS = {
     "upload_bigbed": upload_bigbed
