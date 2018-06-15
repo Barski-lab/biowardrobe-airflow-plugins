@@ -22,7 +22,7 @@ class BioWardrobePluginTrigger(BaseOperator):
         if active_plugins:
             logger.info(f"""Active plugins found for {uid}""")
             for active_plugin in active_plugins:
-                logger.info(f"""{active_plugin['dag_id']} - {active_plugin['run_id']}""")
+                logger.info(f"""Skip trigger {active_plugin['dag_id']} because of {active_plugin['run_id']}""")
         else:
             clean_workspace(uid, f"{uid}_default_.*")
             for plugin in get_plugins(uid):
