@@ -184,7 +184,7 @@ steps:
       source_file: run_rose/plot_points_pic
       target_filename:
         source: bambai_pair
-        valueFrom: $(self.location.split('/').slice(-1)[0].split('.').slice(0,-1).join('.')+"_super_enhancer.png")
+        valueFrom: $(self.location.split('/').slice(-1)[0].split('.').slice(0,-1).join('.')+"_default_s_enhcr.png")
     out: [target_file]
     run:
       cwlVersion: v1.0
@@ -282,7 +282,7 @@ steps:
         default: "bed4"
       output_filename:
         source: bambai_pair
-        valueFrom: $(self.location.split('/').slice(-1)[0].split('.').slice(0,-1).join('.')+"_super_enhancer.bb")
+        valueFrom: $(self.location.split('/').slice(-1)[0].split('.').slice(0,-1).join('.')+"_default_s_enhcr.bb")
     out: [bigbed_file]
     run:
       cwlVersion: v1.0
@@ -402,7 +402,7 @@ steps:
       input_file: [assign_genes/result_file, sort_bed/sorted_file]
       param:
         source: bambai_pair
-        valueFrom: $(self.location.split('/').slice(-1)[0].split('.').slice(0,-1).join('.')+"_super_enhancer.tsv")
+        valueFrom: $(self.location.split('/').slice(-1)[0].split('.').slice(0,-1).join('.')+"_default_s_enhcr.tsv")
     out: [output_file]
     run:
       cwlVersion: v1.0
