@@ -25,20 +25,20 @@ class BioWardrobePluginTrigger(BaseOperator):
                 logger.info(f"""{active_plugin['dag_id']} - {active_plugin['run_id']}""")
         else:
             clean_workspace(uid, f"{uid}_default_.*")
-            # for plugin in get_plugins(uid):
-            #     try:
-            #         dag_id = os.path.splitext(plugin['workflow'])[0].replace(".", "_dot_")
-            #         run_id = "__".join(["trig", uid, str(uuid.uuid4())])
-            #         payload = {'uid': uid, 'run_id': run_id}
-            #         session = settings.Session()
-            #         dr = DagRun(dag_id=dag_id,
-            #                     run_id=run_id,
-            #                     conf=payload,
-            #                     execution_date=datetime.now(),
-            #                     external_trigger=True)
-            #         session.add(dr)
-            #         session.commit()
-            #         session.close()
-            #         logger.info(f"""Trigger {plugin["ptype"]} ({dag_id}) plugin for {uid}:\nrun_id: {run_id}""")
-            #     except SQLAlchemyError as err:
-            #         logger.error(f"""Failed to trigger {plugin["ptype"]} ({dag_id}) plugin for {uid}\n {err}""")
+            for plugin in get_plugins(uid):
+                try:
+                    dag_id = os.path.splitext(plugin['workflow'])[0].replace(".", "_dot_")
+                    run_id = "__".join(["trig", uid, str(uuid.uuid4())])
+                    payload = {'uid': uid, 'run_id': run_id}
+                    session = settings.Session()
+                    dr = DagRun(dag_id=dag_id,
+                                run_id=run_id,
+                                conf=payload,
+                                execution_date=datetime.now(),
+                                external_trigger=True)
+                    session.add(dr)
+                    session.commit()
+                    session.close()
+                    logger.info(f"""Trigger {plugin["ptype"]} ({dag_id}) plugin for {uid}:\nrun_id: {run_id}""")
+                except SQLAlchemyError as err:
+                    logger.error(f"""Failed to trigger {plugin["ptype"]} ({dag_id}) plugin for {uid}\n {err}""")

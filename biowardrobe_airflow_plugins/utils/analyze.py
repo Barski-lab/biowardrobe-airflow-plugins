@@ -94,4 +94,4 @@ def clean_workspace(uid, pattern):
     for file in os.listdir(working_dir):
         if re.match(pattern, file):
             logger.info(f"Removing {os.path.join(working_dir, file)}")
-            # os.remove(os.path.join(working_dir, file))
+            os.remove(os.path.join(working_dir, file))
