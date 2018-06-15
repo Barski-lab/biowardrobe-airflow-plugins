@@ -29,6 +29,7 @@ UPDATE `ems`.`plugintype` SET
     "bambai_pair": {{"class": "File", "location": "{outputs[bambai_pair][location]}", "format": "http://edamontology.org/format_2572"}},
     "isoforms_file": {{"class": "File", "location": "{outputs[rpkm_isoforms][location]}", "format": "http://edamontology.org/format_3752"}},
     "stats_file": {{"class": "File", "location": "{outputs[get_stat_log][location]}", "format": "http://edamontology.org/format_2330"}},
+    "output_prefix": "{uid}_default_plot_",
     "pair": "{pair}",
     "dutp": "{dutp}",
     "threads": {threads},

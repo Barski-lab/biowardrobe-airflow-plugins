@@ -77,7 +77,7 @@ steps:
               } else {
                 return inputs.output_prefix;
               }
-          };
+          }
       - class: DockerRequirement
         dockerPull: biowardrobe2/plugin-plot-dna:v0.0.1
       inputs:
