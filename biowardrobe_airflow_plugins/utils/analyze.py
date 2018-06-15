@@ -2,6 +2,7 @@
 import logging
 import decimal
 import os
+import re
 from json import dumps, loads
 from airflow.models import DagRun
 from airflow.utils.state import State
@@ -84,3 +85,13 @@ def get_active_plugins (uid):
              "run_id": dagrun.run_id} for dag_id in dag_ids
                                           for dagrun in DagRun.find(dag_id, state=State.RUNNING)
                                               if uid in dagrun.run_id]
+
+def clean_workspace(uid, pattern):
+    logger.debug(f"Cleaning workspace for: {uid}")
+    connect_db = HookConnect()
+    settings = connect_db.get_settings()
+    working_dir = norm_path("/".join((settings['wardrobe'], settings['preliminary'], uid)))
+    for file in os.listdir(working_dir):
+        if re.match(pattern, file):
+            logger.info(f"Removing {os.path.join(working_dir, file)}")
+            # os.remove(os.path.join(working_dir, file))
