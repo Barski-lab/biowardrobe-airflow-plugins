@@ -1,8 +1,12 @@
 import os
 import re
 import argparse
+from functools import partial
 from collections import OrderedDict
 from json import loads
+from cwltool.pathmapper import adjustFileObjs, normalizeFilesDirs
+from cwltool.process import compute_checksums
+from cwltool.stdfsaccess import StdFsAccess
 
 
 def remove_not_set_inputs(job_object):
@@ -94,6 +98,21 @@ def dict_find(dictionary, key):
 
 
 def validate_locations(dictionary, key="location"):
-    for location in dict_find(dictionary, key):
-        if not os.path.isfile(location) and not os.path.isdir(location):
-            raise OSError
+    for k in list(dictionary.keys()):
+        if k == key:
+            yield dictionary[k]
+        elif isinstance(dictionary[k], dict):
+            for result in validate_locations(dictionary[k], key):
+                if not os.path.exists(result):
+                    del dictionary[k]
+        elif isinstance(dictionary[k], list):
+            for d in dictionary[k]:
+                for result in validate_locations(d, key):
+                    if not os.path.exists(result):
+                        dictionary[k].remove(d)
+
+
+def add_details_to_outputs(outputs):
+    normalizeFilesDirs(outputs)
+    adjustFileObjs(outputs, partial(compute_checksums, StdFsAccess("")))
+    

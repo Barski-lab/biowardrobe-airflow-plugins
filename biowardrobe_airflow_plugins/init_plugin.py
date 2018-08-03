@@ -7,7 +7,12 @@ from typing import Text
 from json import dumps, loads
 
 from biowardrobe_airflow_plugins.utils.connect import (DirectConnect, HookConnect)
-from biowardrobe_airflow_plugins.utils.func import (norm_path, normalize_args, get_files, fill_template, validate_locations)
+from biowardrobe_airflow_plugins.utils.func import (norm_path,
+                                                    normalize_args,
+                                                    get_files,
+                                                    fill_template,
+                                                    validate_locations,
+                                                    add_details_to_outputs)
 from biowardrobe_airflow_plugins.templates.outputs import OUTPUT_TEMPLATES
 
 from airflow.settings import DAGS_FOLDER
@@ -68,7 +73,8 @@ def gen_outputs(connect_db):
             kwargs["outputs"]["promoter"] = kwargs["outputs"]["promoter"] if "promoter" in kwargs["outputs"] else 1000
             for template in OUTPUT_TEMPLATES[kwargs['exp_id']][kwargs['peak_type']]:
                 kwargs["outputs"].update(fill_template(template, kwargs))
-            validate_locations(kwargs)
+            list(validate_locations(kwargs))
+            add_details_to_outputs(kwargs["outputs"])
             connect_db.execute(f"""UPDATE labdata SET params='{dumps(kwargs["outputs"])}' WHERE uid='{kwargs["uid"]}'""")
             logger.info(f"""Update params for {kwargs['uid']}\n {dumps(kwargs["outputs"], indent=4)}""")
         except Exception:
