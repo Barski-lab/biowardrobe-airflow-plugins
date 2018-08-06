@@ -58,11 +58,10 @@ def gen_outputs(connect_db):
                    FROM  labdata l
                    INNER JOIN (experimenttype e) ON (e.id=l.experimenttype_id)
                    LEFT JOIN (antibody a) ON (l.antibody_id=a.id)
-                   WHERE (l.params NOT LIKE '%bambai_pair%') AND
-                         (l.params NOT LIKE '%bam_merged%')  AND
-                         (l.deleted=0)                       AND
-                         (l.libstatus=12)                    AND
-                         COALESCE(l.egroup_id,'')<>''        AND
+                   WHERE (l.params NOT LIKE '%file:%') AND
+                         (l.deleted=0)                 AND
+                         (l.libstatus=12)              AND
+                         COALESCE(l.egroup_id,'')<>''  AND
                          COALESCE(l.name4browser,'')<>''"""
 
     for kwargs in connect_db.fetchall(sql_query):

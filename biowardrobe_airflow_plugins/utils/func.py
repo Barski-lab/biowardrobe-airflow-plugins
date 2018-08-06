@@ -4,9 +4,10 @@ import argparse
 from functools import partial
 from collections import OrderedDict
 from json import loads
-from cwltool.pathmapper import adjustFileObjs, normalizeFilesDirs
+from cwltool.pathmapper import adjustFileObjs, adjustDirObjs, normalizeFilesDirs
 from cwltool.process import compute_checksums
 from cwltool.stdfsaccess import StdFsAccess
+from schema_salad.ref_resolver import file_uri
 
 
 def remove_not_set_inputs(job_object):
@@ -112,7 +113,14 @@ def validate_locations(dictionary, key="location"):
                         dictionary[k].remove(d)
 
 
+def expand_to_file_uri(job_obj):
+    if "location" in job_obj:
+        job_obj["location"] = file_uri(job_obj["location"])
+
+
 def add_details_to_outputs(outputs):
+    adjustFileObjs(outputs, expand_to_file_uri)
+    adjustDirObjs(outputs, expand_to_file_uri)
     normalizeFilesDirs(outputs)
     adjustFileObjs(outputs, partial(compute_checksums, StdFsAccess("")))
     
