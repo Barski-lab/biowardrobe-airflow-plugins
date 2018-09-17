@@ -34,6 +34,7 @@ setup(
     name='biowardrobe-airflow-plugins',
     description="Add plugin workflows to BioWardrobe",
     long_description=open(README).read(),
+    long_description_content_type="text/markdown",
     version='1.0',
     url='https://github.com/michael-kotliar/biowardrobe-airflow-plugins',
     download_url='https://github.com/michael-kotliar/biowardrobe-airflow-plugins',
@@ -42,12 +43,8 @@ setup(
     license = 'Apache-2.0',
     packages=find_packages(),
     install_requires=[
-        'cwltool == 1.0.20180220121300',
         'sqlparse',
-        'ruamel.yaml < 0.15',
-        'cwl-airflow-parser == 1.0.20180220071453',
-        'mysqlclient>=1.3.6',
-        'apache-airflow >= 1.9.0, < 2'
+        'cwl-airflow-parser'
     ],
     zip_safe=False,
     entry_points={

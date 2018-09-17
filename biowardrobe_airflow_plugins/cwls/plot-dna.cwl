@@ -71,7 +71,7 @@ steps:
         expressionLib:
         - var get_output_prefix = function(ext) {
               ext = ext || "";
-              if (inputs.output_prefix == null){
+              if (inputs.output_prefix == ""){
                 let root = inputs.bambai_pair.basename.split('.').slice(0,-1).join('.');
                 return (root == "")?inputs.bambai_pair.basename+ext:root+ext;
               } else {
@@ -101,7 +101,7 @@ steps:
             position: 9
             prefix: "-o"
             valueFrom: $(get_output_prefix("_default_"))
-          default: null
+          default: ""
           doc: "Output file prefix"
       outputs:
         png_file:
