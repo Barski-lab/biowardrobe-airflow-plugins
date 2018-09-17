@@ -4,6 +4,8 @@ python:
 - 3.6
 os:
 - linux
+env:
+- SLUGIFY_USES_TEXT_UNIDECODE=yes
 install:
 - pip install .
 script: echo "Dummy message"
