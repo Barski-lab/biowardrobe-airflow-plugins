@@ -5,10 +5,8 @@ from os import path
 from subprocess import check_output
 from time import strftime, gmtime
 
-
-SETUP_DIR = path.dirname(__file__)
-README = path.join(SETUP_DIR, 'README.md')
-GIT_VERSION_FILE = path.join(SETUP_DIR, '.git_version')
+VERSION = "1.0"
+GIT_VERSION_FILE = path.join('biowardrobe_airflow_plugins', '.git_version')
 
 
 def get_git_tag():
@@ -42,7 +40,7 @@ def get_version():
         version = get_git_tag()                            # try to get version info from the closest tag
     except Exception:
         try:
-            version = '1.0.' + get_git_timestamp()         # try to get version info from commit date
+            version = VERSION + '.' + get_git_timestamp()         # try to get version info from commit date
         except Exception:
             pass
     try:
@@ -56,7 +54,7 @@ def get_version():
 setup(
     name='biowardrobe-airflow-plugins',
     description="Add plugin workflows to BioWardrobe",
-    long_description=open(README).read(),
+    long_description=open(path.join(path.dirname(__file__), 'README.md')).read(),
     long_description_content_type="text/markdown",
     version=get_version(),
     url='https://github.com/michael-kotliar/biowardrobe-airflow-plugins',
