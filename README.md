@@ -1,4 +1,5 @@
 # BioWardrobe Airflow Plugins
+[![Build Status](https://travis-ci.org/Barski-lab/biowardrobe-airflow-plugins.svg?branch=master)](https://travis-ci.org/Barski-lab/biowardrobe-airflow-plugins)
 
 1. Install **biowardrobe-airflow-plugins** from PyPi
 
