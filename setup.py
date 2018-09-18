@@ -9,7 +9,7 @@ GIT_VERSION_FILE = path.join('biowardrobe_airflow_plugins', '.git_version')
 
 
 def get_git_tag():
-    return check_output(['git', 'describe', '--contains']).strip()
+    return check_output(['git', 'describe', '--contains'], universal_newlines=True).strip()
 
 
 def get_git_timestamp():
