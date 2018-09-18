@@ -5,7 +5,7 @@ from os import path
 from subprocess import check_output
 from time import strftime, gmtime
 
-GIT_VERSION_FILE = path.join('biowardrobe_airflow_plugins', 'git_version')
+GIT_VERSION_FILE = path.join('biowardrobe_airflow_plugins', '.git_version')
 
 
 def get_git_tag():
