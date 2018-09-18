@@ -2,32 +2,55 @@
 
 from setuptools import setup, find_packages
 from os import path
-from subprocess import check_output, CalledProcessError
+from subprocess import check_output
 from time import strftime, gmtime
-from setuptools.command.egg_info import egg_info
+
 
 SETUP_DIR = path.dirname(__file__)
 README = path.join(SETUP_DIR, 'README.md')
+GIT_VERSION_FILE = path.join(SETUP_DIR, '.git_version')
 
 
-class EggInfoFromGit(egg_info):
-
-    def git_timestamp_tag(self):
-        gitinfo = check_output(
-            ['git', 'log', '--first-parent', '--max-count=1',
-             '--format=format:%ct', '.']).strip()
-        return strftime('.%Y%m%d%H%M%S', gmtime(int(gitinfo)))
-
-    def tags(self):
-        if self.tag_build is None:
-            try:
-                self.tag_build = self.git_timestamp_tag()
-            except CalledProcessError:
-                pass
-        return egg_info.tags(self)
+def get_git_tag():
+    return check_output(['git', 'describe', '--contains']).strip()
 
 
-tagger = EggInfoFromGit
+def get_git_timestamp():
+    gitinfo = check_output(
+        ['git', 'log', '--first-parent', '--max-count=1',
+         '--format=format:%ct', '.']).strip()
+    return strftime('%Y%m%d%H%M%S', gmtime(int(gitinfo)))
+
+
+def get_version():
+    '''
+    Tries to get pachage version with following order:
+    0. default version
+    1. from git_version file - when installing from pip, this is the only source to get version
+    2. from tag
+    3. from commit timestamp
+    Updates/creates git_version file with the package version
+    :return: package version 
+    '''
+    version = '1.0.0'                                      # set default version
+    try:
+        with open(GIT_VERSION_FILE, 'r') as input_stream:  # try to get version info from file
+            version = input_stream.read()
+    except Exception:
+        pass
+    try:
+        version = get_git_tag()                            # try to get version info from the closest tag
+    except Exception:
+        try:
+            version = '1.0.' + get_git_timestamp()         # try to get version info from commit date
+        except Exception:
+            pass
+    try:
+        with open(GIT_VERSION_FILE, 'w') as output_stream: # save updated version to file (or the same)
+            output_stream.write(version)
+    except Exception:
+        pass
+    return version
 
 
 setup(
@@ -35,7 +58,7 @@ setup(
     description="Add plugin workflows to BioWardrobe",
     long_description=open(README).read(),
     long_description_content_type="text/markdown",
-    version='1.0',
+    version=get_version(),
     url='https://github.com/michael-kotliar/biowardrobe-airflow-plugins',
     download_url='https://github.com/michael-kotliar/biowardrobe-airflow-plugins',
     author='Michael Kotliar',
@@ -55,7 +78,6 @@ setup(
         ]
     },
     include_package_data=True,
-    cmdclass={'egg_info': tagger},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
