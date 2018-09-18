@@ -12,10 +12,13 @@ script: echo "Dummy message"
 branches:
   only:
   - master
+  - /^([1-9]\d*!)?(0|[1-9]\d*)(\.(0|[1-9]\d*))*((a|b|rc)(0|[1-9]\d*))?(\.post(0|[1-9]\d*))?(\.dev(0|[1-9]\d*))?$/
 deploy:
   provider: pypi
   user: michael_kotliar
   password:
     secure: "YsJIPnOo3IFj6rjdl+sZaOc/NomIgvqPoCcWilaEPbJUNXckBbtQtgjqhSI+jVr+bhN/cVu+xIdrytmfwnjoD9NYj2qaf3ckRXUFsFDN7kU0OwZqeprqy6Z2SZce2YTaFn4P41V9xHsT8OiiWMmKBCtCw0+MLyCWhb2ixq0kXw0XuwGqjBPT/Yj1Cdo+uDtEqvKyMgqUdnF+r3XvqAJn9B3xVZ8x2NN5bDKWDoS94km9PBftSedrijwqAhGquFQA3AHUaoyQ8Xofa3vGUcEB2MLuChGJJAFnun0/mDriYXgVWdpfD6yExOIvhnJkV0EIcYoOlUJOdoDO3Nk8Zml56A604sTroU0+gJTd6BdPdnnxTM4RCGKVATLOW2TDjqitAp66mEbuY5DEeahjFnHpd3ZkRLoskkmZ7/U6yfIAPHy1q5z8IxfpQFnF1IETlrJZKCaxP2mhnsgogIVU84UqqIJIMdtyC1arFUZKsFlkUurdji86AtocRx00CPHr2zp4CP7XwuVmMQnlmr8cGapdg2sk6PoUd5A9atrsZSTQ7iJOVpd1oqRJw1+8IKxE6UHlx5k0gSfo6anQmwaAggHiseTa2yObMgDHevLvNwY8QmlDL0dsNkEDnOTxQ5v8LHyLlFML3eO8pb8hwjf8vm6NugCCVrsc/cEyx/7GS6qD1Yk="
+  on:
+    tags: true
 notifications:
   email: false
