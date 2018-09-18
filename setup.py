@@ -5,8 +5,7 @@ from os import path
 from subprocess import check_output
 from time import strftime, gmtime
 
-VERSION = "1.0"
-GIT_VERSION_FILE = path.join('biowardrobe_airflow_plugins', '.git_version')
+GIT_VERSION_FILE = path.join('biowardrobe_airflow_plugins', 'git_version')
 
 
 def get_git_tag():
@@ -30,7 +29,7 @@ def get_version():
     Updates/creates git_version file with the package version
     :return: package version 
     '''
-    version = '1.0.0'                                      # set default version
+    version = "1.0.0"                                      # set default version
     try:
         with open(GIT_VERSION_FILE, 'r') as input_stream:  # try to get version info from file
             version = input_stream.read()
@@ -40,7 +39,7 @@ def get_version():
         version = get_git_tag()                            # try to get version info from the closest tag
     except Exception:
         try:
-            version = VERSION + '.' + get_git_timestamp()         # try to get version info from commit date
+            version = '1.0.' + get_git_timestamp()         # try to get version info from commit date
         except Exception:
             pass
     try:
