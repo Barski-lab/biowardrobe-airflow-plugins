@@ -99,4 +99,4 @@ ENV/
 out
 gen
 .DS_Store
-
+.git_version
