@@ -34,7 +34,6 @@ class BioWardrobePluginTrigger(BaseOperator):
                     dr = DagRun(dag_id=dag_id,
                                 run_id=run_id,
                                 conf=payload,
-                                execution_date=datetime.now(),
                                 external_trigger=True)
                     session.add(dr)
                     session.commit()
