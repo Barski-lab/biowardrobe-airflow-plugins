@@ -12,7 +12,7 @@ class BioWardrobePluginJobGatherer(CWLJobGatherer):
     def execute(self, context):
         job_result, promises = self.cwl_gather(context)
         data = get_data(promises['uid'])
-        workflow = os.path.basename(self.dag.cwl_workflow)
+        workflow = os.path.basename(self.dag.default_args["cwl_workflow"])
         process_results(upload_rules=data['plugins'][workflow]['upload_rules'],
                         uid=promises['uid'],
                         output_folder=self.output_folder)

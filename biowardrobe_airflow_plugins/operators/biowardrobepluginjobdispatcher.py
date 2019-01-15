@@ -13,6 +13,6 @@ class BioWardrobePluginJobDispatcher(CWLJobDispatcher):
         try:
             return self.cwl_dispatch(conf['job'])
         except KeyError:
-            workflow = os.path.basename(self.dag.cwl_workflow)
+            workflow = os.path.basename(self.dag.default_args["cwl_workflow"])
             return self.cwl_dispatch(get_data(conf['uid'])['plugins'][workflow]['job'])
 
