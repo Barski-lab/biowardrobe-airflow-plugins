@@ -33,7 +33,7 @@ inputs:
     type:
       - "null"
       - string[]
-    doc: "Output suffixes for reads, islands, surface and saturation files"
+    doc: "Output suffixes for reads, islands, surface, frip and saturation files"
 
 
 outputs:
@@ -59,6 +59,13 @@ outputs:
     doc: "Surface plot"
     outputSource: run_satscript/surface_file
 
+  frip_file:
+    type: File
+    label: "FRIP Score plot"
+    format: "http://edamontology.org/format_3603"
+    doc: "FRIP Score plot"
+    outputSource: run_satscript/frip_file
+
   saturation_file:
     type: File
     label: "Surface plot"
@@ -76,7 +83,7 @@ steps:
       percentage: percentage
       output_prefix: output_prefix
       output_suffixes: output_suffixes
-    out: [reads_file, islands_file, surface_file, saturation_file]
+    out: [reads_file, islands_file, surface_file, frip_file, saturation_file]
     run:
       cwlVersion: v1.0
       class: CommandLineTool
@@ -93,7 +100,7 @@ steps:
               }
           };
       - class: DockerRequirement
-        dockerPull: biowardrobe2/satscript:v0.0.1
+        dockerPull: biowardrobe2/satscript:v0.0.2
       inputs:
         bam_file:
           type: File
@@ -133,9 +140,9 @@ steps:
           inputBinding:
             position: 9
             prefix: "-s"
-          default: ["reads.png", "islands.png", "surface.png", "saturation.txt"]
+          default: ["reads.png", "islands.png", "surface.png", "frip.png", "saturation.txt"]
           doc: |
-            Output suffixes for reads, islands, surface and saturation files.
+            Output suffixes for reads, islands, surface, frip and saturation files.
       outputs:
         reads_file:
           type: File
@@ -149,8 +156,12 @@ steps:
           type: File
           outputBinding:
             glob: $("*"+inputs.output_suffixes[2])
-        saturation_file:
+        frip_file:
           type: File
           outputBinding:
             glob: $("*"+inputs.output_suffixes[3])
+        saturation_file:
+          type: File
+          outputBinding:
+            glob: $("*"+inputs.output_suffixes[4])
       baseCommand: ["SatScript"]
