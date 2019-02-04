@@ -4,7 +4,19 @@ class: Workflow
 
 requirements:
   - class: SubworkflowFeatureRequirement
-
+  - class: InlineJavascriptRequirement
+    expressionLib:
+    - var filter = function(data, criteria) {
+            var results = [];
+            var dataParsed = JSON.parse(data);
+            for (var i = 0; i < dataParsed.length; i++){
+                var item = {};
+                item.class = "File";
+                item.path = dataParsed[i][criteria];
+                results.push(item);
+            };
+            return results;
+          };
 
 inputs:
 
@@ -67,19 +79,6 @@ steps:
       cwlVersion: v1.0
       class: CommandLineTool
       requirements:
-        - class: InlineJavascriptRequirement
-          expressionLib:
-          - var filter = function(data, criteria) {
-                  var results = [];
-                  var dataParsed = JSON.parse(data);
-                  for (var i = 0; i < dataParsed.length; i++){
-                      var item = {};
-                      item.class = "File";
-                      item.path = dataParsed[i][criteria];
-                      results.push(item);
-                  };
-                  return results;
-                };
         - class: DockerRequirement
           dockerPull: biowardrobe2/scidap:v0.0.3
       inputs:
