@@ -4,19 +4,7 @@ class: Workflow
 
 requirements:
   - class: SubworkflowFeatureRequirement
-  - class: InlineJavascriptRequirement
-    expressionLib:
-    - var filter = function(data, criteria) {
-            var results = [];
-            var dataParsed = JSON.parse(data);
-            for (var i = 0; i < dataParsed.length; i++){
-                var item = {};
-                item.class = "File";
-                item.path = dataParsed[i][criteria];
-                results.push(item);
-            };
-            return results;
-          };
+
 
 inputs:
 
@@ -81,6 +69,19 @@ steps:
       requirements:
         - class: DockerRequirement
           dockerPull: biowardrobe2/scidap:v0.0.3
+        - class: InlineJavascriptRequirement
+          expressionLib:
+          - var filter = function(data, criteria) {
+                  var results = [];
+                  var dataParsed = JSON.parse(data);
+                  for (var i = 0; i < dataParsed.length; i++){
+                      var item = {};
+                      item.class = "File";
+                      item.path = dataParsed[i][criteria];
+                      results.push(item);
+                  };
+                  return results;
+                };
       inputs:
         script:
           type: string?
@@ -173,58 +174,66 @@ steps:
             cwlVersion: v1.0
             class: CommandLineTool
             requirements:
-              - class: InlineJavascriptRequirement
               - class: DockerRequirement
                 dockerPull: weirauchlab/reli:v0.0.2
+              - class: InlineJavascriptRequirement
+                expressionLib:
+                - var default_output_prefix = function(baseFile, secondaryFile) {
+                      let baseFileRoot = baseFile.basename.split('.').slice(0,-1).join('.');
+                      let secondaryFileRoot = secondaryFile.basename.split('.').slice(0,-1).join('.');
+                      baseFileRoot = baseFileRoot==""?baseFile.basename:baseFileRoot;
+                      secondaryFileRoot = secondaryFileRoot==""?secondaryFile.basename:secondaryFileRoot;
+                      return baseFileRoot + "_" + secondaryFileRoot;
+                  };
             inputs:
               snp_bed_file:
                 type: File
                 inputBinding:
-                  prefix: "--snp"
+                  prefix: "-snp"
               linkage_file:
                 type: File
                 inputBinding:
-                  prefix: "--ld"
+                  prefix: "-ld"
               islands_bed_file:
                 type: File
                 inputBinding:
-                  prefix: "--target"
+                  prefix: "-target"
               chrom_length_file:
                 type: File
                 inputBinding:
-                  prefix: "--build"
+                  prefix: "-build"
               null_model_file:
                 type: File
                 inputBinding:
-                  prefix: "--null"
+                  prefix: "-null"
               dbsnp_file:
                 type: File
                 inputBinding:
-                  prefix: "--dbsnp"
+                  prefix: "-dbsnp"
               match_flag:
                 type: boolean?
                 inputBinding:
-                  prefix: "--match"
+                  prefix: "-match"
                 default: True
               permutation:
                 type: int?
                 inputBinding:
-                  prefix: "--rep"
+                  prefix: "-rep"
                 default: 2000
               correction_multiplier:
                 type: int?
                 inputBinding:
-                  prefix: "--corr"
+                  prefix: "-corr"
                 default: 1
               phenotype_name:
                 type: string?
                 inputBinding:
-                  prefix: "--phenotype"
+                  prefix: "-phenotype"
                 default: "."
               ancestry_name:
                 type: string?
                 inputBinding:
-                  prefix: "--ancestry"
+                  prefix: "-ancestry"
                 default: "."
             outputs:
               overlaps_file:
@@ -235,4 +244,7 @@ steps:
                 type: File
                 outputBinding:
                   glob: "*.stats"
-            baseCommand: ["RELI", "--out", "."]
+            baseCommand: ["RELI", "-out", "."]
+            arguments:
+            - valueFrom: $(default_output_prefix(inputs.islands_bed_file, inputs.snp_bed_file))
+              prefix: "-prefix"
