@@ -281,13 +281,13 @@ steps:
             parser.add_argument("-t", "--target", help="Target filename (used for row names)",             required=True)
             args, _ = parser.parse_known_args(sys.argv[1:])
             result_df = pd.DataFrame()
-            target = os.path.splitext(os.path.basename(args.target))[0]
+            target = os.path.basename(args.target)
             for stat_filename, base in zip(args.stats, args.base):
                 stat_data = pd.read_table(stat_filename).filter(items=["Total", "Ratio", "Mean", "Std", "Z-score", "Relative Risk", "P-val", "Corrected P-val"])
                 stat_data["Target"] = pd.Series(data=[target]).values
-                stat_data["Base"] = pd.Series(data=[os.path.splitext(os.path.basename(base))[0]]).values
+                stat_data["Base"] = pd.Series(data=[os.path.basename(base)]).values
                 result_df = result_df.append(stat_data)
-            result_df.to_csv(target+".stats", sep="\t", index=False)
+            result_df.to_csv(os.path.splitext(target)[0]+".stats", sep="\t", index=False)
           inputBinding:
             position: 5
             prefix: "-c"
