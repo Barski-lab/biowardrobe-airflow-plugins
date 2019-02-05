@@ -56,6 +56,11 @@ outputs:
     doc: "Statistics output files array from completed RELI analysis"
     outputSource: reli_scatter/stats_files
 
+  stats_files_combined:
+    type: File
+    label: "Combined statistics output file"
+    doc: "Combined statistics output file from completed RELI analysis"
+    outputSource: combine_stats_files/stats_files_combined
 
 steps:
 
@@ -248,3 +253,63 @@ steps:
             arguments:
             - valueFrom: $(default_output_prefix(inputs.islands_bed_file, inputs.snp_bed_file))
               prefix: "-prefix"
+
+  combine_stats_files:
+    in:
+      stats_files: reli_scatter/stats_files
+      base_files: group_snp_and_ld/snp_bed_files
+      target_file: islands_bed_file
+    out: [stats_files_combined]
+    run:
+      cwlVersion: v1.0
+      class: CommandLineTool
+      requirements:
+        - class: InlineJavascriptRequirement
+        - class: DockerRequirement
+          dockerPull: biowardrobe2/python-pandas:v0.0.1
+      inputs:
+        script:
+          type: string?
+          default: |
+            # !/usr/bin/env python
+            import sys, os
+            import pandas as pd
+            import argparse
+            parser = argparse.ArgumentParser(description='Combine RELI outputs', add_help=True)
+            parser.add_argument("-s", "--stats",  help="Absolute path to RELI *.stats outputs", nargs="*", required=True)
+            parser.add_argument("-b", "--base",   help="Base filenames (used for row names)",   nargs="*", required=True)
+            parser.add_argument("-t", "--target", help="Target filename (used for row names)",             required=True)
+            args, _ = parser.parse_known_args(sys.argv[1:])
+            result_df = pd.DataFrame()
+            target = os.path.splitext(os.path.basename(args.target))[0]
+            for stat_filename, base in zip(args.stats, args.base):
+                stat_data = pd.read_table(stat_filename).filter(items=["Total", "Ratio", "Mean", "Std", "Z-score", "Relative Risk", "P-val", "Corrected P-val"])
+                stat_data["Target"] = pd.Series(data=[target]).values
+                stat_data["Base"] = pd.Series(data=[os.path.splitext(os.path.basename(base))[0]]).values
+                result_df = result_df.append(stat_data)
+            result_df.to_csv(target+".stats", sep="\t", index=False)
+          inputBinding:
+            position: 5
+            prefix: "-c"
+        stats_files:
+          type: File[]
+          inputBinding:
+            position: 6
+            prefix: "--stats"
+        base_files:
+          type: File[]
+          inputBinding:
+            position: 7
+            prefix: "--base"
+        target_file:
+          type: File
+          inputBinding:
+            position: 8
+            prefix: "--target"
+      outputs:
+        stats_files_combined:
+          type: File
+          outputBinding:
+            glob: "*"
+      baseCommand: ["python"]
+
