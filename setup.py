@@ -64,7 +64,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'sqlparse',
-        'cwl-airflow-parser',
+        'cwl-airflow == 1.1.3',
         'mysqlclient>=1.3.6'
     ],
     zip_safe=False,

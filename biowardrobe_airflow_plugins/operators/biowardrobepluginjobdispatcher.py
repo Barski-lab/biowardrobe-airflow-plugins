@@ -1,5 +1,5 @@
 import os
-from cwl_airflow_parser import CWLJobDispatcher
+from cwl_airflow import CWLJobDispatcher
 from biowardrobe_airflow_plugins.utils.analyze import get_data
 
 

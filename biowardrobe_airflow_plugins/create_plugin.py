@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from datetime import datetime
 from airflow.models import DAG
-from cwl_airflow_parser.cwldag import CWLDAG
+from cwl_airflow.cwldag import CWLDAG
 from biowardrobe_airflow_plugins.operators.biowardrobepluginjobdispatcher import BioWardrobePluginJobDispatcher
 from biowardrobe_airflow_plugins.operators.biowardrobepluginjobgatherer import BioWardrobePluginJobGatherer
 from biowardrobe_airflow_plugins.operators.biowardrobeplugintrigger import BioWardrobePluginTrigger
